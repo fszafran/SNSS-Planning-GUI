@@ -33,5 +33,8 @@ public class Main extends Application {
         Scene scene = new Scene(root, Color.BEIGE);
         stage.setScene(scene);
         stage.show();
+        stage.setTitle("Bleh w00t w00t");
+
     }
+
 }
