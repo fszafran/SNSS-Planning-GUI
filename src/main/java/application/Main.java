@@ -24,6 +24,7 @@ public class Main extends Application {
         for(double coords : XYZ){
             System.out.println(coords);
         }
+        System.out.println("trolololo");
         launch(args);
     }
 
