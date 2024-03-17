@@ -19,12 +19,12 @@ public class Main extends Application {
 
     public static void main(String[] args) throws IOException {
         List<List<Double>> Nav = AlmanacModule.readAlmanac("src/main/resources/Almanac2024053.alm");
-        List<Double> rowNav = Nav.get(0);
-        double[]XYZ = (SatelliteCalculations.getSatPos(SatelliteCalculations.weekSecond[0],SatelliteCalculations.weekSecond[1], rowNav));
-        for(double coords : XYZ){
-            System.out.println(coords);
-        }
-        System.out.println("trolololo");
+        List<Double> rowNav = Nav.getFirst();
+        double[]XYZ = (SatelliteCalculations.getSatPos(SatelliteCalculations.weekSecond[1],SatelliteCalculations.weekSecond[0], rowNav));
+//        for(double coords : XYZ){
+//            System.out.println(coords);
+//        }
+
         launch(args);
     }
 

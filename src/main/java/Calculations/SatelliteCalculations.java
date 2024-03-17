@@ -8,8 +8,6 @@ import java.util.List;
 public class SatelliteCalculations {
     public SatelliteCalculations() throws IOException {
     }
-    static final double u = 3.986005e14; //m^3/s^2
-    static final double WE = 7.2921151467e-5; //rad/s
     static final double a =6378137.0;
     static final double e2 = 0.00669438002290;
     int phi=52;
@@ -41,9 +39,12 @@ public class SatelliteCalculations {
     }
     public static double[] getGPSTime(int year, int month, int day, int hour, int minute, int second){
         double days = julday(year,month,day,0)- julday(1980,1,6,0);
-        double week = days/7;
+        double week = Math.floor(days/7);
         double CalculatedDay = days%7;
         double secondOfWeek = CalculatedDay*86400+hour*3600+minute*60+second;
+        System.out.println("week: "+week);
+        System.out.println("sow: "+secondOfWeek);
+
         return new double[]{week,secondOfWeek};
     }
     public double Np(int phi, double a, double e2){
@@ -72,7 +73,7 @@ public class SatelliteCalculations {
         double i = Math.toRadians(rowNav.get(8)+54);
         double omegaTime = Math.toRadians(rowNav.get(9)/1000);
         double GPSWeek = rowNav.get(12);
-        double time = week * 7 * 86400 + weekSecond[1];
+        double time = week * 7 * 86400 + t;
         System.out.println("time: " + time);
         double toaWeek = GPSWeek *7*86400+toa;
         System.out.println("toaWeek: " + toaWeek);
@@ -104,7 +105,7 @@ public class SatelliteCalculations {
         System.out.println("xk: " + xk);
         double yk = rk*Math.sin(phik);
         System.out.println("yk: " + yk);
-        double omegaK = omega+(omegaTime-WE)*tk-(WE-toa);
+        double omegaK = omega+(omegaTime-WE)*tk-WE*toa;
         System.out.println("omegaK: " + omegaK);
         double X = xk * Math.cos(omegaK) - yk * Math.cos(i) * Math.sin(omegaK);
         double Y = xk * Math.sin(omegaK) + yk * Math.cos(i) * Math.cos(omegaK);
