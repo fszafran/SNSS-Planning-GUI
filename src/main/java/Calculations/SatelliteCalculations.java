@@ -8,11 +8,6 @@ import java.util.List;
 public class SatelliteCalculations {
     public SatelliteCalculations() throws IOException {
     }
-    static final double a =6378137.0;
-    static final double e2 = 0.00669438002290;
-    int phi=52;
-    int lam=21;
-    int height=100;
     List<List<Double>> nav = AlmanacModule.readAlmanac("src/main/resources/Almanac2024053.alm");
     public static double[][] Rneu(double phi, double lam) {
         double[][] R = new double[3][3];
@@ -113,11 +108,17 @@ public class SatelliteCalculations {
         return new double[]{X,Y,Z};
     }
 
-//    public static void calculateSatelliteData(int start, int stop, double[][] nav, double[] XYZr, double maska){
-
-    //}
-
-
+    public static double[] blh2xyz(double phi, double lam,  double height){
+        double a = 6378137;
+        double e2 = 0.00669438002290;
+        phi = Math.toRadians(phi);
+        lam = Math.toRadians(lam);
+        double N = a / Math.sqrt(1 - e2 * Math.pow(Math.sin(phi), 2));
+        double X = (N + height) * Math.cos(phi) * Math.cos(lam);
+        double Y = (N + height) * Math.cos(phi) * Math.sin(lam);
+        double Z = (N * (1 - e2) + height) * Math.sin(phi);
+        return new double[] {X, Y, Z};
+    };
 
 
 }
