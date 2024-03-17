@@ -37,9 +37,6 @@ public class SatelliteCalculations {
         double week = Math.floor(days/7);
         double CalculatedDay = days%7;
         double secondOfWeek = CalculatedDay*86400+hour*3600+minute*60+second;
-        System.out.println("week: "+week);
-        System.out.println("sow: "+secondOfWeek);
-
         return new double[]{week,secondOfWeek};
     }
     public double Np(int phi, double a, double e2){
@@ -58,50 +55,33 @@ public class SatelliteCalculations {
         double WE = 7.2921151467e-5;
         double e = rowNav.get(2);
         double a = Math.pow(rowNav.get(3),2);
-        System.out.println("a: " + a);
         double omega = Math.toRadians(rowNav.get(4));
         double w = Math.toRadians(rowNav.get(5));
         double M = Math.toRadians(rowNav.get(6));
-        System.out.println("M: " + M);
         double toa = rowNav.get(7);
-        System.out.println("toa: " + toa);
         double i = Math.toRadians(rowNav.get(8)+54);
         double omegaTime = Math.toRadians(rowNav.get(9)/1000);
         double GPSWeek = rowNav.get(12);
         double time = week * 7 * 86400 + t;
-        System.out.println("time: " + time);
         double toaWeek = GPSWeek *7*86400+toa;
-        System.out.println("toaWeek: " + toaWeek);
         double tk = time - toaWeek;
-        System.out.println("tk: " + tk);
         double n = Math.sqrt(u/Math.pow(a, 3));
         double Mk = M+n*tk;
-        System.out.println("Mk: " + Mk);
         List<Double> E = new ArrayList<>();
         int j =0;
         E.add(Mk);
-        while(true) {
-            E.add(Mk+e*Math.sin(E.get(j)));
+        do {
+            E.add(Mk + e * Math.sin(E.get(j)));
             j++;
-            if(Math.abs(E.get(j)-E.get(j-1))< Math.pow(10,-12)){
-                break;
-            }
-        }
+        } while (!(Math.abs(E.get(j) - E.get(j - 1)) < Math.pow(10, -12)));
         for (double Es : E){
-            System.out.println("E: " + Es);
         }
         double vk = Math.atan2(Math.sqrt(1 - Math.pow(e, 2)) * Math.sin(E.get(j)), Math.cos(E.get(j)) - e);
-        System.out.println("vk: " + vk);
         double phik = vk+w;
-        System.out.println("phik: " + phik);
         double rk = a*(1-e*Math.cos(E.get(j)));
-        System.out.println("rk: " + rk);
         double xk = rk*Math.cos(phik);
-        System.out.println("xk: " + xk);
         double yk = rk*Math.sin(phik);
-        System.out.println("yk: " + yk);
         double omegaK = omega+(omegaTime-WE)*tk-WE*toa;
-        System.out.println("omegaK: " + omegaK);
         double X = xk * Math.cos(omegaK) - yk * Math.cos(i) * Math.sin(omegaK);
         double Y = xk * Math.sin(omegaK) + yk * Math.cos(i) * Math.cos(omegaK);
         double Z = yk * Math.sin(i);
@@ -118,6 +98,9 @@ public class SatelliteCalculations {
         double Y = (N + height) * Math.cos(phi) * Math.sin(lam);
         double Z = (N * (1 - e2) + height) * Math.sin(phi);
         return new double[] {X, Y, Z};
+    };
+    public void asdawdwada(){
+        System.out.print("Kocham moją dziewczyne");
     };
 
 
