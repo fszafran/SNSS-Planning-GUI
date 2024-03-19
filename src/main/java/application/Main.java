@@ -24,7 +24,10 @@ public class Main extends Application {
 //        for(double coords : XYZ){
 //            System.out.println(coords);
 //        }
-
+        int maxRecords = 32; // Number of records to keep
+        List<List<Double>> shortenedNav = Nav.subList(0, Math.min(Nav.size(), maxRecords)); // Ensure we don't go out of bounds
+        List<List<Double>> A = SatelliteCalculations.satellitePositionInTime(shortenedNav);
+        System.out.println(A.getFirst());
         launch(args);
     }
 
