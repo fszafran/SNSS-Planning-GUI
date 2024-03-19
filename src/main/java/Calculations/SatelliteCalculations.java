@@ -2,7 +2,7 @@ package Calculations;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.RealMatrixFormat;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,10 +45,6 @@ public class SatelliteCalculations {
         double CalculatedDay = days % 7;
         double secondOfWeek = CalculatedDay * 86400 + hour * 3600 + minute * 60 + second;
         return new double[]{week, secondOfWeek};
-    }
-
-    public static double Np(double phi, double a, double e2) {
-        return a / (Math.pow((1 - e2 * Math.sin(phi) * Math.sin(phi)), 0.5));
     }
 
     static int hour = 12;
@@ -113,8 +109,6 @@ public class SatelliteCalculations {
         int phi = 52;
         int lam = 21;
         int h = 100;
-        double e2 = 0.00669438002290;
-        double N = Np(Math.toRadians(phi), lam, e2);
         double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
         double[][] RT = new double[3][3];
         for (int i = 0; i < 3; i++) {
