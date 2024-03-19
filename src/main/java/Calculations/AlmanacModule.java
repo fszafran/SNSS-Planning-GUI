@@ -41,6 +41,8 @@ public class AlmanacModule {
                 finalData.get((i / 13) * 6 + j).add(data.get(i).get(j));
             }
         }
+        data.clear();
+        finalData.removeIf(row -> row.isEmpty() || row.contains(Double.NaN));
         for (List<Double> cos : finalData){
             System.out.println(cos);
         }

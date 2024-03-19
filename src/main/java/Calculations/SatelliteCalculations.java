@@ -1,5 +1,8 @@
 package Calculations;
-
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.LUDecomposition;
+import org.apache.commons.math3.linear.RealMatrixFormat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +47,7 @@ public class SatelliteCalculations {
         return new double[]{week, secondOfWeek};
     }
 
-    public static double Np(int phi, double a, double e2) {
+    public static double Np(double phi, double a, double e2) {
         return a / (Math.pow((1 - e2 * Math.sin(phi) * Math.sin(phi)), 0.5));
     }
 
@@ -80,7 +83,7 @@ public class SatelliteCalculations {
             E.add(Mk + e * Math.sin(E.get(j)));
             j++;
             //System.out.println("Jotka:" + j);
-        } while (!(Math.abs(E.get(j) - E.get(j - 1)) < 10e-12));
+        } while (!(Math.abs(E.get(j) - E.get(j - 1)) < 1e-12));
         double vk = Math.atan2(Math.sqrt(1 - Math.pow(e, 2)) * Math.sin(E.get(j)), Math.cos(E.get(j)) - e);
         double phik = vk + w;
         double rk = a * (1 - e * Math.cos(E.get(j)));
@@ -111,7 +114,7 @@ public class SatelliteCalculations {
         int lam = 21;
         int h = 100;
         double e2 = 0.00669438002290;
-        double N = Np(phi, lam, e2);
+        double N = Np(Math.toRadians(phi), lam, e2);
         double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
         double[][] RT = new double[3][3];
         for (int i = 0; i < 3; i++) {
@@ -125,31 +128,21 @@ public class SatelliteCalculations {
         int stop = start + 60*60*24;
         List<List<Double>> azimuthElevationCoords = new ArrayList<>();
         List<List<Double>> A = new ArrayList<>();
-        int iter=0;
-        for(int i=start;i<stop;i+=60*10){
+        for(int i=start;i<stop;i+=60*10) {
             A.clear();
-            for(List<Double> sat : nav){
-//                System.out.println("i:"+i);
-//                System.out.println("iter" +iter);
-                iter++;
-                double[] XYZs = getSatPos(i,weekSecond[0],sat);
-                double[] XYZsr = {XYZs[0]-XYZr[0],XYZs[1]-XYZr[1],XYZs[2]-XYZr[2]};
+            for (List<Double> sat : nav) {
+                double[] XYZs = getSatPos(i, weekSecond[0], sat);
+                double[] XYZsr = {XYZs[0] - XYZr[0], XYZs[1] - XYZr[1], XYZs[2] - XYZr[2]};
                 double[] neu = new double[RT.length];
                 for (int j = 0; j < RT.length; j++) {
                     for (int k = 0; k < XYZsr.length; k++) {
                         neu[j] += RT[j][k] * XYZsr[k];
                     }
                 }
-                if(iter==1) {
-                    System.out.println("neu[1]" + neu[1]);
 
-                    System.out.println("neu[0]" + neu[0]);
-                    System.out.println("neu[2]" + neu[2]);
-                }
-
-                double azimuth = Math.atan2(neu[1],neu[0]);
-                if(azimuth<0){
-                    azimuth+=2*Math.PI;
+                double azimuth = Math.atan2(neu[1], neu[0]);
+                if (azimuth < 0) {
+                    azimuth += 2 * Math.PI;
                 }
                 double elevation = Math.asin(neu[2] / Math.sqrt(Math.pow(neu[0], 2) + Math.pow(neu[1], 2) + Math.pow(neu[2], 2)));
                 List<Double> coords = new ArrayList<>();
@@ -170,6 +163,29 @@ public class SatelliteCalculations {
                     wierszA.add(1.0);
                     A.add(wierszA);
                 }
+            }
+            //tu implementacja
+            double[][] matrixData = new double[A.size()][];
+            for (int it = 0; it < A.size(); it++) {
+                matrixData[it] = A.get(it).stream().mapToDouble(Double::doubleValue).toArray();
+            }
+            A.clear();
+            RealMatrix AMatrix = new Array2DRowRealMatrix(matrixData);
+            RealMatrix transposeA = AMatrix.transpose();
+            RealMatrix ATA = transposeA.multiply(AMatrix);
+            RealMatrix Q = new LUDecomposition(ATA).getSolver().getInverse();
+            double GDOP = Math.sqrt(Q.getTrace());
+            double PDOP = Math.sqrt(Q.getEntry(0, 0) + Q.getEntry(1, 1) + Q.getEntry(2, 2));
+            double TDOP = Math.sqrt(Q.getEntry(3, 3));
+            RealMatrix Qxyz = Q.getSubMatrix(0, 2, 0, 2);
+            RealMatrix RTR = new Array2DRowRealMatrix(RT);
+            RealMatrix RR = new Array2DRowRealMatrix(R);
+            RealMatrix Qneu = RTR.multiply(Qxyz).multiply(RR);
+            double HDOP = Math.sqrt(Qneu.getEntry(0, 0) + Qneu.getEntry(1, 1));
+            double VDOP = Math.sqrt(Qneu.getEntry(2, 2));
+            double PDOPneu = Math.sqrt(Qneu.getEntry(0, 0) + Qneu.getEntry(1, 1) + Qneu.getEntry(2, 2));
+            if (Math.abs(PDOP - PDOPneu) > 1e-9) {
+                System.out.println("PDOP != PDOPneu");
             }
 
         }
