@@ -43,9 +43,9 @@ public class AlmanacModule {
         }
         data.clear();
         finalData.removeIf(row -> row.isEmpty() || row.contains(Double.NaN));
-        for (List<Double> cos : finalData){
-            System.out.println(cos);
-        }
+//        for (List<Double> cos : finalData){
+//            System.out.println(cos);
+//        }
         return finalData;
    }
 }
