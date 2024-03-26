@@ -31,6 +31,7 @@ public class ElevationChart implements Initializable {
     @FXML
     private CheckBox GlonassCheckBox;
     private SatelliteCalculations satelliteData = WelcomeSceneController.satelliteData;
+    private double mask = Math.toDegrees(satelliteData.mask);
     private int hourInterval = satelliteData.hourInterval;
     private int minuteInterval = satelliteData.minuteInterval;
     private Map<Double, List<Double>> elevationMap = WelcomeSceneController.elevationMap;
@@ -39,8 +40,6 @@ public class ElevationChart implements Initializable {
     private final NumberAxis yAxis = new NumberAxis();
     private final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
     public void populateChart(LineChart<Number,Number> elevationChart,Map<Double, List<Double>>elevationMap){
-        boolean isInValidSegment = false;
-
         for (Map.Entry<Double, List<Double>> entry : elevationMap.entrySet()) {
             Double satelliteId = entry.getKey();
             List<Double> elevations = entry.getValue();
@@ -48,13 +47,17 @@ public class ElevationChart implements Initializable {
             double time = 0;
 
             for (Double elevation : elevations) {
-                if (elevation > 10) {
-                    final double timeFinal = time; // Create a final copy of the time variable
+                if (elevation > this.mask) {
+                    final double timeFinal = time;
                     XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(time, elevation);
                     series.getData().add(dataPoint);
                     dataPoint.nodeProperty().addListener((obs, oldNode, newNode) -> {
                         if (newNode != null) {
-                            Tooltip tooltip = new Tooltip("Satellite ID: " + satelliteId + "\nTime: " + timeFinal + " hours\nElevation: " + elevation);
+                            int hFormat = (int) Math.floor(timeFinal); // Extract whole hours
+                            int mFormat = (int) Math.round((timeFinal - hFormat) * 60); // Calculate minutes (rounded)
+                            String timeString = String.format("%d hours  %02d minutes", hFormat, mFormat);
+                            String elevationString = String.format("%.1f", elevation);
+                            Tooltip tooltip = new Tooltip("Satellite ID: " + satelliteId + "\nTime: " + timeString + "\nElevation: " + elevationString);
                             Tooltip.install(newNode, tooltip);
                         }
                     });
@@ -71,24 +74,6 @@ public class ElevationChart implements Initializable {
 
 
     }
-    @Override
-    public void initialize(URL arg0, ResourceBundle arg1){
-
-        xAxis.setLabel("Time (hours)");
-        yAxis.setLabel("Elevation (m)");
-        xAxis.setMinorTickCount(60/minuteInterval);
-        xAxis.setMinorTickVisible(true);
-        populateChart(lineChart,this.elevationMap);
-        lineChart.prefWidthProperty().bind(chartPane.widthProperty());
-        lineChart.prefHeightProperty().bind(chartPane.heightProperty());
-        lineChart.setAnimated(false);
-        chartPane.getChildren().add(lineChart);
-        for(List<Double> sat : this.nav){
-            System.out.println("nr"+sat.getFirst());
-        }
-    }
-
-
     public void back(ActionEvent event) throws IOException{
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -140,6 +125,22 @@ public class ElevationChart implements Initializable {
             Map<Double, List<Double>> elevationGalileoMap = satelliteData.getElevationTime(navGalileo);
             lineChart.getData().clear();
             populateChart(this.lineChart,elevationGalileoMap);
+        }
+    }
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1){
+
+        xAxis.setLabel("Time (hours)");
+        yAxis.setLabel("Elevation (m)");
+        xAxis.setMinorTickCount(60/minuteInterval);
+        xAxis.setMinorTickVisible(true);
+        populateChart(lineChart,this.elevationMap);
+        lineChart.prefWidthProperty().bind(chartPane.widthProperty());
+        lineChart.prefHeightProperty().bind(chartPane.heightProperty());
+        lineChart.setAnimated(false);
+        chartPane.getChildren().add(lineChart);
+        for(List<Double> sat : this.nav){
+            System.out.println("nr"+sat.getFirst());
         }
     }
 

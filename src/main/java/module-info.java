@@ -8,6 +8,8 @@ module org.example.navsat {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires commons.math3;
+    requires org.jfree.jfreechart;
+    requires org.jfree.chart.fx;
 
     opens application to javafx.fxml;
     exports application;

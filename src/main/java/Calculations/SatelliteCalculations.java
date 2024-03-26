@@ -2,7 +2,6 @@ package Calculations;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.LUDecomposition;
-
 import java.util.*;
 
 public class SatelliteCalculations {
@@ -18,7 +17,7 @@ public class SatelliteCalculations {
     int height;
     public int hourInterval;
     public int minuteInterval;
-    double mask;
+    public double mask;
     double[] weekSecond;
 
     public SatelliteCalculations(int phi, int lam, int height, double mask, int year, int month, int day, int hourInterval, int minuteInterval, int hour, int minute, int second) {
@@ -139,7 +138,7 @@ public class SatelliteCalculations {
         return new double[]{X, Y, Z};
     }
 
-    int iter = 0;
+
 
 //    public List<List<Double>> satellitePositionInTime(List<List<Double>> nav) {
 //
@@ -254,30 +253,36 @@ public class SatelliteCalculations {
 //
 //        return azimuthElevationCoords;
 //    }
-
-    public Map<Double, List<Double>> getElevationTime(List<List<Double>> nav) {
-        double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
+    private double[][] transpose3DMatrix(double[][] R){
         double[][] RT = new double[3][3];
-        Map<Double, List<Double>> elevationMap=new TreeMap<>();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 RT[i][j] = R[j][i];
             }
         }
+        return RT;
+    }
+    private double[] calculateNeu(double[] XYZsr, double[][]RT){
+        double[] neu = new double[RT.length];
+            for (int j = 0; j < RT.length; j++) {
+                for (int k = 0; k < XYZsr.length; k++) {
+                    neu[j] += RT[j][k] * XYZsr[k];
+                }
+            }
+            return neu;
+    }
+    public Map<Double, List<Double>> getElevationTime(List<List<Double>> nav) {
+        double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
+        double[][] RT = transpose3DMatrix(R);
+        Map<Double, List<Double>> elevationMap=new TreeMap<>();
         double[] XYZr = blh2xyz(phi, lam, height);
         int start = (int) weekSecond[1];
         int stop = start + 60 * 60 * hourInterval;
         for (int i = start; i <= stop; i += 60 * minuteInterval) {
-            iter++;
             for (List<Double> sat : nav) {
                 double[] XYZs = getSatPos(i, weekSecond[0], sat);
                 double[] XYZsr = {XYZs[0] - XYZr[0], XYZs[1] - XYZr[1], XYZs[2] - XYZr[2]};
-                double[] neu = new double[RT.length];
-                for (int j = 0; j < RT.length; j++) {
-                    for (int k = 0; k < XYZsr.length; k++) {
-                        neu[j] += RT[j][k] * XYZsr[k];
-                    }
-                }
+                double[] neu = calculateNeu(XYZsr,RT);
                 double elevation = Math.asin(neu[2] / Math.sqrt(Math.pow(neu[0], 2) + Math.pow(neu[1], 2) + Math.pow(neu[2], 2)));
                 if (!elevationMap.containsKey(sat.getFirst())) {
                     List<Double> elevations = new ArrayList<>();
@@ -292,16 +297,11 @@ public class SatelliteCalculations {
         }
         return elevationMap;
     }
-    public List<Integer> satellitesAtTheMoment(List<List<Double>> nav){
+    public List<Integer> getSatellitesAtTheMoment(List<List<Double>> nav){
         double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
-        double[][] RT = new double[3][3];
+        double[][] RT = transpose3DMatrix(R);
         List<Integer> satellitesByHour = new ArrayList<>();
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                RT[i][j] = R[j][i];
-            }
-        }
         double[] XYZr = blh2xyz(phi, lam, height);
         int start = (int) weekSecond[1];
         int stop = start + 60 * 60 * hourInterval;
@@ -315,12 +315,7 @@ public class SatelliteCalculations {
             for (List<Double> sat : nav) {
                 double[] XYZs = getSatPos(i, weekSecond[0], sat);
                 double[] XYZsr = {XYZs[0] - XYZr[0], XYZs[1] - XYZr[1], XYZs[2] - XYZr[2]};
-                double[] neu = new double[RT.length];
-                for (int j = 0; j < RT.length; j++) {
-                    for (int k = 0; k < XYZsr.length; k++) {
-                        neu[j] += RT[j][k] * XYZsr[k];
-                    }
-                }
+                double[] neu = calculateNeu(XYZsr,RT);
                 double elevation = Math.asin(neu[2] / Math.sqrt(Math.pow(neu[0], 2) + Math.pow(neu[1], 2) + Math.pow(neu[2], 2)));
                 if(elevation>this.mask){
                     numberOfSatellites++;
@@ -328,5 +323,98 @@ public class SatelliteCalculations {
             }
         }
         return satellitesByHour;
+    }
+    public List<List<Double>> getDops(List<List<Double>> nav){
+        double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
+        double[][] RT = transpose3DMatrix(R);
+        double[] XYZr = blh2xyz(phi,lam,height);
+        int start = (int) weekSecond[1];
+        int stop = start + 60 * 60 * hourInterval;
+        List<List<Double>> A = new ArrayList<>();
+        List<List<Double>> dops = new ArrayList<>();
+        for(int i = 0; i<=4;i++){
+            dops.add(new ArrayList<>());
+        }
+        for (int i = start; i <= stop; i += 60 * minuteInterval) {
+            A.clear();
+            for (List<Double> sat : nav) {
+                double[] XYZs = getSatPos(i, weekSecond[0], sat);
+                double[] XYZsr = {XYZs[0] - XYZr[0], XYZs[1] - XYZr[1], XYZs[2] - XYZr[2]};
+                double[] neu = calculateNeu(XYZsr,RT);
+                double elevation = Math.asin(neu[2] / Math.sqrt(Math.pow(neu[0], 2) + Math.pow(neu[1], 2) + Math.pow(neu[2], 2)));
+                double p = Math.sqrt(Math.pow(XYZs[0] - XYZr[0], 2) + Math.pow(XYZs[1] - XYZr[1], 2) + Math.pow(XYZs[2] - XYZr[2], 2));
+                if (elevation > mask) {
+                    List<Double> wierszA = new ArrayList<>();
+                    wierszA.add(-(XYZs[0] - XYZr[0]) / p);
+                    wierszA.add(-(XYZs[1] - XYZr[1]) / p);
+                    wierszA.add(-(XYZs[2] - XYZr[2]) / p);
+                    wierszA.add(1.0);
+                    A.add(wierszA);
+                }
+            }
+            double[][] matrixData = new double[A.size()][];
+            for (int it = 0; it < A.size(); it++) {
+                matrixData[it] = A.get(it).stream().mapToDouble(Double::doubleValue).toArray();
+            }
+            //A.clear();
+            RealMatrix AMatrix = new Array2DRowRealMatrix(matrixData);
+            RealMatrix transposeA = AMatrix.transpose();
+            RealMatrix ATA = transposeA.multiply(AMatrix);
+            RealMatrix Q = new LUDecomposition(ATA).getSolver().getInverse();
+            double GDOP = Math.sqrt(Q.getTrace());
+            System.out.println("t: "+i+" gdop: "+GDOP);
+            dops.getFirst().add(GDOP);
+            double PDOP = Math.sqrt(Q.getEntry(0, 0) + Q.getEntry(1, 1) + Q.getEntry(2, 2));
+            System.out.println("t: "+i+" PDOP: "+PDOP);
+            dops.get(1).add(PDOP);
+            double TDOP = Math.sqrt(Q.getEntry(3, 3));
+            System.out.println("t: "+i+" TDOP: "+TDOP);
+            dops.get(2).add(TDOP);
+            RealMatrix Qxyz = Q.getSubMatrix(0, 2, 0, 2);
+            RealMatrix RTR = new Array2DRowRealMatrix(RT);
+            RealMatrix RR = new Array2DRowRealMatrix(R);
+            RealMatrix Qneu = RTR.multiply(Qxyz).multiply(RR);
+            double HDOP = Math.sqrt(Qneu.getEntry(0, 0) + Qneu.getEntry(1, 1));
+            System.out.println("t: "+i+" HDOP: "+HDOP);
+            dops.get(3).add(HDOP);
+            double VDOP = Math.sqrt(Qneu.getEntry(2, 2));
+            System.out.println("t: "+i+" VDOP: "+VDOP);
+            dops.get(4).add(VDOP);
+            double PDOPneu = Math.sqrt(Qneu.getEntry(0, 0) + Qneu.getEntry(1, 1) + Qneu.getEntry(2, 2));
+            if (Math.abs(PDOP - PDOPneu) > 1e-9) {
+                System.out.println("PDOP != PDOPneu");
+            }
+
+        }
+        return dops;
+    }
+    public Map<Double, List<Double>> getAzimuthElevation(List<List<Double>> nav){
+        double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
+        double[][] RT = transpose3DMatrix(R);
+        Map<Double, List<Double>> azimuthElevationMap=new TreeMap<>();
+        double[] XYZr = blh2xyz(phi, lam, height);
+        int start = (int) weekSecond[1];
+        int stop = start + 60 * 60 * hourInterval;
+        for(int i = start; i<=stop; i+=60*60){
+                for (List<Double> sat : nav) {
+                    double[] XYZs = getSatPos(i, weekSecond[0], sat);
+                    double[] XYZsr = {XYZs[0] - XYZr[0], XYZs[1] - XYZr[1], XYZs[2] - XYZr[2]};
+                    double[] neu = calculateNeu(XYZsr, RT);
+                    double elevation = Math.asin(neu[2] / Math.sqrt(Math.pow(neu[0], 2) + Math.pow(neu[1], 2) + Math.pow(neu[2], 2)));
+                    double azimuth = Math.atan2(neu[1], neu[0]);
+                    azimuth = (azimuth < 0) ? azimuth + 2 * Math.PI : azimuth;
+                    if (!azimuthElevationMap.containsKey(sat.getFirst())) {
+                        List<Double> azimuthElevation = new ArrayList<>();
+                        azimuthElevation.add(Math.toDegrees(azimuth));
+                        azimuthElevation.add(Math.toDegrees(elevation));
+                        azimuthElevationMap.put(sat.getFirst(), azimuthElevation);
+                    } else {
+                        List<Double> azimuthElevation = azimuthElevationMap.get(sat.getFirst());
+                        azimuthElevation.add(Math.toDegrees(azimuth));
+                        azimuthElevation.add(Math.toDegrees(elevation));
+                    }
+                }
+        }
+        return azimuthElevationMap;
     }
 }
