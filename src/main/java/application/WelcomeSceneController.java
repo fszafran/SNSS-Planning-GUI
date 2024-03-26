@@ -122,6 +122,7 @@ public class WelcomeSceneController implements Initializable {
 
 
         satelliteData= new SatelliteCalculations(phi,lam,height,mask,year,month,day,hourInterval,minuteInterval,hour,minute,second);
+        //MOŻE LEPIEJ ZROBIĆ W CONTROLLERZE
         elevationMap= satelliteData.getElevationTime(nav);
         //satelliteData.display_elements();
 

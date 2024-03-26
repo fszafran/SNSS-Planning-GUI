@@ -7,18 +7,14 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VisualisationMenuController">
    <children>
-      <AnchorPane layoutY="-1.0" prefHeight="400.0" prefWidth="600.0">
-         <children>
-            <Button fx:id="button1" layoutX="274.0" layoutY="129.0" mnemonicParsing="false" onAction="#button1Click" text="Elewacja" />
-            <Button layoutX="274.0" layoutY="175.0" mnemonicParsing="false" text="Button" />
-            <Button layoutX="274.0" layoutY="227.0" mnemonicParsing="false" text="Button" />
-            <Button layoutX="274.0" layoutY="276.0" mnemonicParsing="false" text="Button" />
-            <Label layoutX="165.0" layoutY="28.0" text="Projekt 1 Naw-Sat">
-               <font>
-                  <Font name="Calibri Bold" size="36.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
+      <Button fx:id="button1" layoutX="269.0" layoutY="128.0" mnemonicParsing="false" onAction="#button1Click" text="Elewacja" />
+      <Button layoutX="249.0" layoutY="174.0" mnemonicParsing="false" onAction="#button2Click" text="Liczba Satelitów" />
+      <Button layoutX="253.0" layoutY="229.0" mnemonicParsing="false" onAction="#button3Click" text="Współczynniki" />
+      <Button layoutX="271.0" layoutY="276.0" mnemonicParsing="false" onAction="#button4Click" text="Skyplot" />
+      <Label layoutX="165.0" layoutY="28.0" text="Projekt 1 Naw-Sat">
+         <font>
+            <Font name="Calibri Bold" size="36.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
