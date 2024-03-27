@@ -32,9 +32,10 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("WelcomeScene.fxml")));
         Scene scene = new Scene(root);
+       // scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         stage.setScene(scene);
         stage.setTitle("woot");
-        stage.getIcons().add(new Image("icon.jpg"));
+        stage.getIcons().add(new Image("/icon.jpg"));
         stage.show();
 
 

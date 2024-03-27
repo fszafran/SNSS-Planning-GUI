@@ -10,8 +10,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -55,6 +57,8 @@ public class WelcomeSceneController implements Initializable {
 
     @FXML
         private ComboBox<Integer> startSecond;
+    @FXML
+            private Button selectButton;
 
     int phi;
     int lam;
@@ -74,13 +78,13 @@ public class WelcomeSceneController implements Initializable {
     public static SatelliteCalculations satelliteData;
     public static List<List<Double>> nav;
 
-    static {
-        try {
-            nav = AlmanacModule.readAlmanac("src/main/resources/Almanac2024053.alm");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    static {
+//        try {
+//            nav = AlmanacModule.readAlmanac("src/main/resources/Almanac2024053.alm");
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public static Map<Double, List<Double>> elevationMap;
 
@@ -104,32 +108,60 @@ public class WelcomeSceneController implements Initializable {
 
     }
     public void submition(ActionEvent event) throws IOException {
-        //POMYSL NAD DOUBLEM
-        phi = Integer.parseInt(phiDeg.getText())+Integer.parseInt(phiDeg1.getText())/60+Integer.parseInt(phiDeg2.getText())/3600;
-        lam = Integer.parseInt(lamDeg.getText())+Integer.parseInt(lamDeg1.getText())/60+Integer.parseInt(lamDeg2.getText())/3600;
-        height = heightSpinner.getValue();
-        mask = maskSpinner.getValue();
-        mask = Math.toRadians(mask);
-        LocalDate startDate = dateStart.getValue();
-        year = startDate.getYear();
-        month =startDate.getMonthValue();
-        day =startDate.getDayOfMonth();
-        hourInterval = hourVariants.getValue();
-        minuteInterval = minuteVariants.getValue();
-        hour = startHour.getValue();
-        minute = startMinute.getValue();
-        second = startSecond.getValue();
+        try{//POMYSL NAD DOUBLEM
+            phi = Integer.parseInt(phiDeg.getText()) + Integer.parseInt(phiDeg1.getText()) / 60 + Integer.parseInt(phiDeg2.getText()) / 3600;
+            lam = Integer.parseInt(lamDeg.getText()) + Integer.parseInt(lamDeg1.getText()) / 60 + Integer.parseInt(lamDeg2.getText()) / 3600;
+            height = heightSpinner.getValue();
+            mask = maskSpinner.getValue();
+            mask = Math.toRadians(mask);
+            LocalDate startDate = dateStart.getValue();
+            year = startDate.getYear();
+            month = startDate.getMonthValue();
+            day = startDate.getDayOfMonth();
+            hourInterval = hourVariants.getValue();
+            minuteInterval = minuteVariants.getValue();
+            hour = startHour.getValue();
+            minute = startMinute.getValue();
+            second = startSecond.getValue();
+            if (nav == null){
+                nav = AlmanacModule.readAlmanac("src/main/resources/Almanac2024053.alm");
+            }
 
 
-        satelliteData= new SatelliteCalculations(phi,lam,height,mask,year,month,day,hourInterval,minuteInterval,hour,minute,second);
-        //MOŻE LEPIEJ ZROBIĆ W CONTROLLERZE
-        elevationMap= satelliteData.getElevationTime(nav);
-        //satelliteData.display_elements();
+            satelliteData = new SatelliteCalculations(phi, lam, height, mask, year, month, day, hourInterval, minuteInterval, hour, minute, second);
+            //MOŻE LEPIEJ ZROBIĆ W CONTROLLERZE
+            elevationMap = satelliteData.getElevationTime(nav);
 
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene=new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+
+            root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
+            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            scene=new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            //satelliteData.display_elements();
+        }
+        catch (NullPointerException e){
+            showAlert("Puste parametry","Uzupełnij wszystkie pola");
+        }
+        catch (NumberFormatException e) {
+            showAlert("Niepoprawny format wejściowy", "Wprowadź poprawne wartości liczbowe");
+        }
+    }
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    public void selectAlmanach(ActionEvent event) throws IOException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Wybierz plik");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ALM Files","*.alm"));
+        File file = fileChooser.showOpenDialog(stage);
+        if(file!=null){
+            nav=AlmanacModule.readAlmanac(file.getAbsolutePath());
+            selectButton.setText(file.getName());
+        }
     }
 }

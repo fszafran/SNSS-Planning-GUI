@@ -4,14 +4,30 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ElevationChart">
+<AnchorPane prefHeight="700.0" prefWidth="900.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ElevationChart">
    <children>
-      <Button fx:id="Back" layoutX="880.0" layoutY="662.0" mnemonicParsing="false" onAction="#back" text="Back" />
-      <Button fx:id="Menu" layoutX="765.0" layoutY="653.0" mnemonicParsing="false" onAction="#mainMenu" text="Change Settings&#10;   (Main menu)" />
-      <CheckBox fx:id="GPSCheckBox" layoutX="199.0" layoutY="666.0" mnemonicParsing="false" onAction="#GPS" text="GPS" />
-      <CheckBox fx:id="GlonassCheckBox" layoutX="440.0" layoutY="665.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS" />
-      <CheckBox fx:id="GalileoCheckBox" layoutX="332.0" layoutY="666.0" mnemonicParsing="false" onAction="#galileo" text="GALILEO" />
+      <Button fx:id="back" layoutX="827.0" layoutY="655.0" mnemonicParsing="false" onAction="#back" stylesheets="@../style.css" text="Powrót">
+         <font>
+            <Font size="13.0" />
+         </font></Button>
+      <Button fx:id="mainMenu" layoutX="663.0" layoutY="645.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Menu Główne&#10;(Zmiana Parametrów)" textAlignment="CENTER">
+         <font>
+            <Font size="13.0" />
+         </font></Button>
+      <CheckBox fx:id="GPSCheckBox" layoutX="80.0" layoutY="658.0" mnemonicParsing="false" onAction="#GPS" text="GPS">
+         <font>
+            <Font size="14.0" />
+         </font></CheckBox>
+      <CheckBox fx:id="GlonassCheckBox" layoutX="274.0" layoutY="659.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS">
+         <font>
+            <Font size="14.0" />
+         </font></CheckBox>
+      <CheckBox fx:id="GalileoCheckBox" layoutX="171.0" layoutY="659.0" mnemonicParsing="false" onAction="#galileo" text="GALILEO">
+         <font>
+            <Font size="14.0" />
+         </font></CheckBox>
       <Pane fx:id="chartPane" layoutY="1.0" prefHeight="650.0" prefWidth="900.0" />
    </children>
 </AnchorPane>

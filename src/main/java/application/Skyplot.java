@@ -7,7 +7,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.fx.ChartViewer;
-
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.axis.NumberTickUnit;
@@ -90,7 +89,7 @@ public class Skyplot implements Initializable{
     return result;
     }
     private JFreeChart configureChart(XYDataset dataset){
-        JFreeChart chart = ChartFactory.createPolarChart("Skyplot",dataset,true,false,false
+        JFreeChart chart = ChartFactory.createPolarChart("",dataset,true,false,false
         );
         PolarPlot plot = (PolarPlot) chart.getPlot();
 //        plot.setBackgroundPaint(Color.WHITE);
@@ -141,7 +140,7 @@ public class Skyplot implements Initializable{
         JFreeChart chart = configureChart(dataset);
         ChartViewer viewer = new ChartViewer(chart);
         viewer.setPrefWidth(900);
-        viewer.setPrefHeight(650);
+        viewer.setPrefHeight(630);
         chartPane.getChildren().add(viewer);
     }
 }
