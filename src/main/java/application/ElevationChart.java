@@ -92,7 +92,7 @@ public class ElevationChart implements Initializable {
         if(GPSCheckBox.isSelected()){
             List<List<Double>> navGPS = new ArrayList<>();
             for(List<Double> sat : this.nav){
-                if(sat.getFirst()<33){
+                if(sat.getFirst()<100){
                     navGPS.add(sat);
                 }
             }

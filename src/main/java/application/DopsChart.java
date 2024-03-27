@@ -77,7 +77,7 @@ public class DopsChart implements Initializable {
             currentFactor++;
             lineChart.getData().add(series);
         }
-        //lineChart.setLegendVisible(false);
+        lineChart.setLegendVisible(false);
     }
 
     @Override

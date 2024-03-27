@@ -1,0 +1,18 @@
+#back,#mainMenu,#submitButton,#selectButton{
+    -fx-background-color: #3eb489;
+    -fx-text-fill: #ffffff;
+    -fx-border-width: 0;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 4px;
+    -fx-font-size: 13px;
+    /*-fx-font-family:*/
+}
+#back:hover, #mainMenu:hover, #submitButton:hover, #selectButton:hover {
+    -fx-background-color: #16a085;
+}
+.root {
+    -fx-background-color: #1a1a2e;
+}
+.label {
+    -fx-text-fill: #ffffff;
+}
