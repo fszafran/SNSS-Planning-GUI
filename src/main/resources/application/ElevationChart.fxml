@@ -20,14 +20,20 @@
          <font>
             <Font size="14.0" />
          </font></CheckBox>
-      <CheckBox fx:id="GlonassCheckBox" layoutX="274.0" layoutY="659.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS">
-         <font>
-            <Font size="14.0" />
-         </font></CheckBox>
-      <CheckBox fx:id="GalileoCheckBox" layoutX="171.0" layoutY="659.0" mnemonicParsing="false" onAction="#galileo" text="GALILEO">
+      <CheckBox fx:id="GlonassCheckBox" layoutX="154.0" layoutY="659.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS">
          <font>
             <Font size="14.0" />
          </font></CheckBox>
       <Pane fx:id="chartPane" layoutY="1.0" prefHeight="650.0" prefWidth="900.0" />
+      <CheckBox fx:id="allCheckBox" layoutX="384.0" layoutY="658.0" mnemonicParsing="false" onAction="#all" text="ALL">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="GalileoCheckBox" layoutX="270.0" layoutY="660.0" mnemonicParsing="false" onAction="#galileo" text="GALILEO">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
    </children>
 </AnchorPane>

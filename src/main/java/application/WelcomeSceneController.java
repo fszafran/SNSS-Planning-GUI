@@ -40,25 +40,24 @@ public class WelcomeSceneController implements Initializable {
     @FXML
         private Spinner<Integer> maskSpinner;
     @FXML
-        private DatePicker dateStart;
+        public DatePicker dateStart;
     @FXML
         private ComboBox<Integer> hourVariants;
-        private final Integer[] hrs = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,24};
+        private final Integer[] hrs = {0,1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23};
+        private final Integer[] hrsInterval={6,12,24};
     @FXML
         private ComboBox<Integer> minuteVariants;
-        private final Integer[] mnt = {10,15,20,30};
+        private final Integer[] mnt = {5,10,15,20,30};
     @FXML
-        private ComboBox<Integer> startHour;
+        public ComboBox<Integer> startHour;
     @FXML
-        private ComboBox<Integer> startMinute;
+        public ComboBox<Integer> startMinute;
         private final Integer[] mts = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-                30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60};
-
-
+                30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59};
     @FXML
-        private ComboBox<Integer> startSecond;
+        public ComboBox<Integer> startSecond;
     @FXML
-            private Button selectButton;
+        private Button selectButton;
 
     int phi;
     int lam;
@@ -77,19 +76,8 @@ public class WelcomeSceneController implements Initializable {
     private Parent root;
     public static SatelliteCalculations satelliteData;
     public static List<List<Double>> nav;
-
-//    static {
-//        try {
-//            nav = AlmanacModule.readAlmanac("src/main/resources/Almanac2024053.alm");
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
     public static Map<Double, List<Double>> elevationMap;
 
-    public WelcomeSceneController() throws IOException {
-    }
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -99,7 +87,7 @@ public class WelcomeSceneController implements Initializable {
         maskFactory.setValue(10);
         heightSpinner.setValueFactory(heightFactory);
         maskSpinner.setValueFactory(maskFactory);
-        hourVariants.getItems().addAll(hrs);
+        hourVariants.getItems().addAll(hrsInterval);
         minuteVariants.getItems().addAll(mnt);
         startHour.getItems().addAll(hrs);
         startMinute.getItems().addAll(mts);

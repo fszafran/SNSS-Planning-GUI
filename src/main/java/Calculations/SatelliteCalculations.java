@@ -37,24 +37,6 @@ public class SatelliteCalculations {
 
     }
 
-    public void display_elements() {
-        System.out.println("Phi:" + this.phi);
-        System.out.println("Lam:" + this.lam);
-        System.out.println("Height:" + this.height);
-        System.out.println("Mask:" + this.mask);
-        System.out.println("Year:" + this.year);
-        System.out.println("Month:" + this.month);
-        System.out.println("Day:" + this.day);
-        System.out.println("Hour Interval:" + this.hourInterval);
-        System.out.println("Minute Interval:" + this.minuteInterval);
-        System.out.println("Hour:" + this.hour);
-        System.out.println("Minute:" + this.minute);
-        System.out.println("Second:" + this.second);
-        System.out.println("Sow:" + this.weekSecond[1]);
-
-    }
-//    List<List<Double>> nav = AlmanacModule.readAlmanac("src/main/resources/Almanac2024053.alm");
-
     public double[][] rNeu(double phi, double lam) {
         double[][] R = new double[3][3];
         R[0][0] = -Math.sin(phi) * Math.cos(lam);
@@ -78,6 +60,13 @@ public class SatelliteCalculations {
             month = month + 12;
         }
         return Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + (double) hour / 24 - 1537.5;
+    }
+    public static String formatValue(int value) {
+        if (value < 10) {
+            return "0" + value;
+        } else {
+            return String.valueOf(value);
+        }
     }
 
     public double[] getGPSTime(int year, int month, int day, int hour, int minute, int second) {
@@ -138,121 +127,6 @@ public class SatelliteCalculations {
         return new double[]{X, Y, Z};
     }
 
-
-
-//    public List<List<Double>> satellitePositionInTime(List<List<Double>> nav) {
-//
-//        double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
-//        double[][] RT = new double[3][3];
-//        for (int i = 0; i < 3; i++) {
-//            for (int j = 0; j < 3; j++) {
-//                RT[i][j] = R[j][i];
-//            }
-//        }
-//        double[] XYZr = blh2xyz(phi, lam, height);
-//        int start = (int) weekSecond[1];
-//        int stop = start + 60 * 60 * hourInterval;
-//        List<List<Double>> azimuthElevationCoords = new ArrayList<>();
-//        List<List<Double>> A = new ArrayList<>();
-//        Map<Double, List<Double>> elevationMap=new TreeMap<>();
-//        for (int i = start; i <= stop; i += 60 * minuteInterval) {
-//            A.clear();
-//            iter++;
-//            for (List<Double> sat : nav) {
-//                double[] XYZs = getSatPos(i, weekSecond[0], sat);
-//                double[] XYZsr = {XYZs[0] - XYZr[0], XYZs[1] - XYZr[1], XYZs[2] - XYZr[2]};
-//                double[] neu = new double[RT.length];
-//                for (int j = 0; j < RT.length; j++) {
-//                    for (int k = 0; k < XYZsr.length; k++) {
-//                        neu[j] += RT[j][k] * XYZsr[k];
-//                    }
-//                }
-//
-//                double azimuth = Math.atan2(neu[1], neu[0]);
-//                if (azimuth < 0) {
-//                    azimuth += 2 * Math.PI;
-//                }
-//
-//                double elevation = Math.asin(neu[2] / Math.sqrt(Math.pow(neu[0], 2) + Math.pow(neu[1], 2) + Math.pow(neu[2], 2)));
-////                if (iter == 1) {
-////                    System.out.println(sat.getFirst() + " elev: " + Math.toDegrees(elevation));
-////                }
-//
-//
-//                List<Double> coords = new ArrayList<>();
-//                coords.add(sat.getFirst());
-//                coords.add((double) i - weekSecond[1]);
-//                coords.add(XYZs[0]);
-//                coords.add(XYZs[1]);
-//                coords.add(XYZs[2]);
-//                coords.add(Math.toDegrees(azimuth));
-//                coords.add(Math.toDegrees(elevation));
-//                azimuthElevationCoords.add(coords);
-//
-//                double p = Math.sqrt(Math.pow(XYZs[0] - XYZr[0], 2) + Math.pow(XYZs[1] - XYZr[1], 2) + Math.pow(XYZs[2] - XYZr[2], 2));
-//
-//                if (!elevationMap.containsKey(sat.getFirst())) {
-//                    List<Double> elevations = new ArrayList<>();
-//                    elevations.add(Math.toDegrees(elevation));
-//                    elevationMap.put(sat.get(0), elevations);
-//                } else {
-//                    List<Double> elevations = elevationMap.get(sat.getFirst());
-//                    elevations.add(Math.toDegrees(elevation));
-//                    //this.elevationMap.put(sat.get(0), elevations);
-//                }
-//
-//                if (elevation > mask) {
-//                    List<Double> wierszA = new ArrayList<>();
-//                    wierszA.add(-(XYZs[0] - XYZr[0]) / p);
-//                    wierszA.add(-(XYZs[1] - XYZr[1]) / p);
-//                    wierszA.add(-(XYZs[2] - XYZr[2]) / p);
-//                    wierszA.add(1.0);
-//                    A.add(wierszA);
-//
-//
-//                }
-//
-//            }
-//            //tu implementacja
-//            double[][] matrixData = new double[A.size()][];
-//            for (int it = 0; it < A.size(); it++) {
-//                matrixData[it] = A.get(it).stream().mapToDouble(Double::doubleValue).toArray();
-//            }
-////            for (int test = 0; test < matrixData.length; test++) {
-////                for (int test1 = 0; test1 < matrixData[test1].length; test1++) {
-////                    System.out.print(matrixData[test][test1] + " ");
-////                }
-////                System.out.println();
-////            }
-//            A.clear();
-//            RealMatrix AMatrix = new Array2DRowRealMatrix(matrixData);
-//            RealMatrix transposeA = AMatrix.transpose();
-//            RealMatrix ATA = transposeA.multiply(AMatrix);
-//            RealMatrix Q = new LUDecomposition(ATA).getSolver().getInverse();
-//            double GDOP = Math.sqrt(Q.getTrace());
-//            double PDOP = Math.sqrt(Q.getEntry(0, 0) + Q.getEntry(1, 1) + Q.getEntry(2, 2));
-//            double TDOP = Math.sqrt(Q.getEntry(3, 3));
-//            RealMatrix Qxyz = Q.getSubMatrix(0, 2, 0, 2);
-//            RealMatrix RTR = new Array2DRowRealMatrix(RT);
-//            RealMatrix RR = new Array2DRowRealMatrix(R);
-//            RealMatrix Qneu = RTR.multiply(Qxyz).multiply(RR);
-//            double HDOP = Math.sqrt(Qneu.getEntry(0, 0) + Qneu.getEntry(1, 1));
-//            double VDOP = Math.sqrt(Qneu.getEntry(2, 2));
-//            double PDOPneu = Math.sqrt(Qneu.getEntry(0, 0) + Qneu.getEntry(1, 1) + Qneu.getEntry(2, 2));
-//            if (Math.abs(PDOP - PDOPneu) > 1e-9) {
-//                System.out.println("PDOP != PDOPneu");
-//            }
-//
-//
-//        }
-//        for (Map.Entry<Double, List<Double>> entry : elevationMap.entrySet()) {
-//            Double key = entry.getKey();
-//            List<Double> values = entry.getValue();
-//            System.out.println("Key: " + key + " Values: " + values);
-//        }
-//
-//        return azimuthElevationCoords;
-//    }
     private double[][] transpose3DMatrix(double[][] R){
         double[][] RT = new double[3][3];
         for (int i = 0; i < 3; i++) {
@@ -284,15 +158,14 @@ public class SatelliteCalculations {
                 double[] XYZsr = {XYZs[0] - XYZr[0], XYZs[1] - XYZr[1], XYZs[2] - XYZr[2]};
                 double[] neu = calculateNeu(XYZsr,RT);
                 double elevation = Math.asin(neu[2] / Math.sqrt(Math.pow(neu[0], 2) + Math.pow(neu[1], 2) + Math.pow(neu[2], 2)));
-                if (!elevationMap.containsKey(sat.getFirst())) {
-                    List<Double> elevations = new ArrayList<>();
-                    elevations.add(Math.toDegrees(elevation));
-                    elevationMap.put(sat.getFirst(), elevations);
-                } else {
-                    List<Double> elevations = elevationMap.get(sat.getFirst());
-                    elevations.add(Math.toDegrees(elevation));
-                }
-
+                    if (!elevationMap.containsKey(sat.getFirst())) {
+                        List<Double> elevations = new ArrayList<>();
+                        elevations.add(Math.toDegrees(elevation));
+                        elevationMap.put(sat.getFirst(), elevations);
+                    } else {
+                        List<Double> elevations = elevationMap.get(sat.getFirst());
+                        elevations.add(Math.toDegrees(elevation));
+                    }
             }
         }
         return elevationMap;
@@ -301,7 +174,6 @@ public class SatelliteCalculations {
         double[][] R = rNeu(Math.toRadians(phi), Math.toRadians(lam));
         double[][] RT = transpose3DMatrix(R);
         List<Integer> satellitesByHour = new ArrayList<>();
-
         double[] XYZr = blh2xyz(phi, lam, height);
         int start = (int) weekSecond[1];
         int stop = start + 60 * 60 * hourInterval;
@@ -311,7 +183,6 @@ public class SatelliteCalculations {
                 satellitesByHour.add(numberOfSatellites);
             }
             numberOfSatellites=0;
-
             for (List<Double> sat : nav) {
                 double[] XYZs = getSatPos(i, weekSecond[0], sat);
                 double[] XYZsr = {XYZs[0] - XYZr[0], XYZs[1] - XYZr[1], XYZs[2] - XYZr[2]};
@@ -356,7 +227,6 @@ public class SatelliteCalculations {
             for (int it = 0; it < A.size(); it++) {
                 matrixData[it] = A.get(it).stream().mapToDouble(Double::doubleValue).toArray();
             }
-            //A.clear();
             RealMatrix AMatrix = new Array2DRowRealMatrix(matrixData);
             RealMatrix transposeA = AMatrix.transpose();
             RealMatrix ATA = transposeA.multiply(AMatrix);
@@ -384,7 +254,6 @@ public class SatelliteCalculations {
             if (Math.abs(PDOP - PDOPneu) > 1e-9) {
                 System.out.println("PDOP != PDOPneu");
             }
-
         }
         return dops;
     }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="672.0" prefWidth="830.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NumberOfSatellitesChart">
+<AnchorPane fx:id="AllCheckBox" prefHeight="672.0" prefWidth="830.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NumberOfSatellitesChart">
    <children>
       <Pane fx:id="chartPane" prefHeight="600.0" prefWidth="830.0" />
       <Button fx:id="mainMenu" layoutX="600.0" layoutY="607.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Menu Główne&#10;(Zmiana parametrów)" textAlignment="CENTER">
@@ -16,5 +17,25 @@
          <font>
             <Font size="13.0" />
          </font></Button>
+      <CheckBox fx:id="gpsCheckBox" layoutX="72.0" layoutY="620.0" mnemonicParsing="false" onAction="#gps" text="GPS">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="glonassCheckBox" layoutX="146.0" layoutY="621.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="allCheckBox" layoutX="376.0" layoutY="620.0" mnemonicParsing="false" onAction="#all" text="ALL">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="galileoCheckBox" layoutX="262.0" layoutY="622.0" mnemonicParsing="false" onAction="#galileo" text="GALILEO">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </CheckBox>
    </children>
 </AnchorPane>

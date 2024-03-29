@@ -1,6 +1,6 @@
 #back,#mainMenu,#submitButton,#selectButton{
     -fx-background-color: #3eb489;
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: white;
     -fx-border-width: 0;
     -fx-padding: 5px 10px;
     -fx-border-radius: 4px;
@@ -14,5 +14,38 @@
     -fx-background-color: #1a1a2e;
 }
 .label {
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: white;
+}
+.axis{
+    -fx-tick-label-fill: white;
+}
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+.chart-vertical-grid-lines {
+    -fx-stroke: white;
+}
+.chart-horizontal-grid-lines {
+    -fx-stroke: white;
+}
+.axis-tick-mark {
+    -fx-stroke: white;
+}
+.axis-minor-tick-mark {
+    -fx-stroke: white;
+}
+.chart-legend-item{
+    -fx-text-fill: black;
+}
+.slider{
+    -fx-control-inner-background: white;
+    -fx-thumb-color: white;
+}
+.check-box{
+    -fx-text-fill: white;
+}
+.tooltip{
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-font-family: Calibri;
 }

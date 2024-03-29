@@ -42,7 +42,7 @@
             <Font size="18.0" />
          </font></Label>
       <ComboBox fx:id="startHour" layoutX="422.0" layoutY="396.0" prefHeight="35.0" prefWidth="72.0" />
-      <Label layoutX="275.0" layoutY="495.0" text="Interwał obliczeń">
+      <Label layoutX="275.0" layoutY="495.0" text="Okres obliczeń">
          <font>
             <Font size="18.0" />
          </font></Label>
@@ -91,7 +91,7 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="259.0" layoutY="449.0" text="Interwał obserwacji">
+      <Label layoutX="259.0" layoutY="449.0" text="Okres obserwacji">
          <font>
             <Font size="18.0" />
          </font></Label>

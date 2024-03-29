@@ -2,9 +2,8 @@ package application;
 import Calculations.SatelliteCalculations;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.fx.ChartViewer;
 import org.jfree.chart.JFreeChart;
@@ -31,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+
 public class Skyplot implements Initializable{
     private Stage stage;
     private Scene scene;
@@ -39,13 +39,16 @@ public class Skyplot implements Initializable{
     private Pane chartPane;
     @FXML
     private Slider hourSlider;
+    @FXML
+    private CheckBox gpsCheckBox;
+    @FXML
+    private CheckBox glonassCheckBox;
+    @FXML
+    private CheckBox galileoCheckBox;
     private SatelliteCalculations satelliteData = WelcomeSceneController.satelliteData;
     private int hourInterval = satelliteData.hourInterval;
-    private int minuteInterval = satelliteData.minuteInterval;
     private List<List<Double>> nav = WelcomeSceneController.nav;
-    int maxRecords = 32;
-    List<List<Double>> shortenedNav = nav.subList(0, Math.min(nav.size(), maxRecords));
-    private Map<Double, List<Double>> azimuthElevationMap = satelliteData.getAzimuthElevation(shortenedNav);
+    private Map<Double, List<Double>> azimuthElevationMap = satelliteData.getAzimuthElevation(nav);
     private double mask = Math.toDegrees(satelliteData.mask);
     public void back(ActionEvent event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
@@ -65,7 +68,19 @@ public class Skyplot implements Initializable{
     private XYDataset createDataset(int currentTime){
         XYSeriesCollection result = new XYSeriesCollection();
         for (Map.Entry<Double, List<Double>> entry : azimuthElevationMap.entrySet()){
-            Double satelliteId = entry.getKey();
+            String satelliteId;
+            if (entry.getKey() < 38) {
+                int keyWithoutDecimals = entry.getKey().intValue();
+                satelliteId = String.format("G%d", keyWithoutDecimals);
+            }
+            else if(entry.getKey() >= 38 && entry.getKey() < 202){
+                int keyWithoutDecimals = entry.getKey().intValue()-37;
+                satelliteId = String.format("R%d", keyWithoutDecimals);
+            }
+            else{
+                int keyWithoutDecimals = entry.getKey().intValue()-200;
+                satelliteId = String.format("E%d", keyWithoutDecimals);
+            }
             List<Double> azimuthElevation = entry.getValue();
             int index;
             if(currentTime==0) {
@@ -92,13 +107,9 @@ public class Skyplot implements Initializable{
         JFreeChart chart = ChartFactory.createPolarChart("",dataset,true,false,false
         );
         PolarPlot plot = (PolarPlot) chart.getPlot();
-//        plot.setBackgroundPaint(Color.WHITE);
-//        plot.setRadiusGridlinePaint(Color.DARK_GRAY);
-//        plot.setAngleGridlinePaint(Color.BLACK);
         plot.setRadiusMinorGridlinesVisible(false);
         DefaultPolarItemRenderer renderer = (DefaultPolarItemRenderer) plot.getRenderer();
         renderer.setShapesVisible(true);
-//        plot.setAngleLabelFont(new Font("Arial", 12));
         NumberAxis rangeAxis = (NumberAxis) plot.getAxis();
         rangeAxis.setTickUnit(new NumberTickUnit(10.0));
         rangeAxis.setMinorTickMarksVisible(false);
@@ -116,9 +127,9 @@ public class Skyplot implements Initializable{
         hourSlider.setBlockIncrement(1);
         hourSlider.setShowTickMarks(true);
         hourSlider.setShowTickLabels(true);
-        hourSlider.setMajorTickUnit(1); // Set this to the desired interval for major ticks
-        hourSlider.setMinorTickCount(0); // Ensure there are no minor ticks
-        hourSlider.setSnapToTicks(true); // Ensure the slider snaps to the ticks
+        hourSlider.setMajorTickUnit(1);
+        hourSlider.setMinorTickCount(0);
+        hourSlider.setSnapToTicks(true);
         hourSlider.valueProperty().addListener(new ChangeListener<Number>()
         {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val)
@@ -140,7 +151,7 @@ public class Skyplot implements Initializable{
         JFreeChart chart = configureChart(dataset);
         ChartViewer viewer = new ChartViewer(chart);
         viewer.setPrefWidth(900);
-        viewer.setPrefHeight(630);
+        viewer.setPrefHeight(610);
         chartPane.getChildren().add(viewer);
     }
 }
