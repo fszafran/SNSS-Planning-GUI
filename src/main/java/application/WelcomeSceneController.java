@@ -12,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -71,6 +70,7 @@ public class WelcomeSceneController implements Initializable {
     int day;
     int hourInterval;
     int minuteInterval;
+    LocalDate selectedDate;
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -78,34 +78,17 @@ public class WelcomeSceneController implements Initializable {
     public static List<List<Double>> nav;
     public static Map<Double, List<Double>> elevationMap;
 
-
-    @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
-        SpinnerValueFactory<Integer> heightFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,8500);
-        SpinnerValueFactory<Integer> maskFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1,20);
-        heightFactory.setValue(100);
-        maskFactory.setValue(10);
-        heightSpinner.setValueFactory(heightFactory);
-        maskSpinner.setValueFactory(maskFactory);
-        hourVariants.getItems().addAll(hrsInterval);
-        minuteVariants.getItems().addAll(mnt);
-        startHour.getItems().addAll(hrs);
-        startMinute.getItems().addAll(mts);
-        startSecond.getItems().addAll(mts);
-
-
-    }
     public void submition(ActionEvent event) throws IOException {
-        try{//POMYSL NAD DOUBLEM
+        try{
             phi = Integer.parseInt(phiDeg.getText()) + Integer.parseInt(phiDeg1.getText()) / 60 + Integer.parseInt(phiDeg2.getText()) / 3600;
             lam = Integer.parseInt(lamDeg.getText()) + Integer.parseInt(lamDeg1.getText()) / 60 + Integer.parseInt(lamDeg2.getText()) / 3600;
             height = heightSpinner.getValue();
             mask = maskSpinner.getValue();
             mask = Math.toRadians(mask);
-            LocalDate startDate = dateStart.getValue();
-            year = startDate.getYear();
-            month = startDate.getMonthValue();
-            day = startDate.getDayOfMonth();
+            selectedDate = dateStart.getValue();
+            year = selectedDate.getYear();
+            month = selectedDate.getMonthValue();
+            day = selectedDate.getDayOfMonth();
             hourInterval = hourVariants.getValue();
             minuteInterval = minuteVariants.getValue();
             hour = startHour.getValue();
@@ -114,19 +97,14 @@ public class WelcomeSceneController implements Initializable {
             if (nav == null){
                 nav = AlmanacModule.readAlmanac("src/main/resources/Almanac2024053.alm");
             }
-
-
             satelliteData = new SatelliteCalculations(phi, lam, height, mask, year, month, day, hourInterval, minuteInterval, hour, minute, second);
-            //MOŻE LEPIEJ ZROBIĆ W CONTROLLERZE
             elevationMap = satelliteData.getElevationTime(nav);
-
 
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene=new Scene(root);
             stage.setScene(scene);
             stage.show();
-            //satelliteData.display_elements();
         }
         catch (NullPointerException e){
             showAlert("Puste parametry","Uzupełnij wszystkie pola");
@@ -151,5 +129,20 @@ public class WelcomeSceneController implements Initializable {
             nav=AlmanacModule.readAlmanac(file.getAbsolutePath());
             selectButton.setText(file.getName());
         }
+    }
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        SpinnerValueFactory<Integer> heightFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,8848);
+        SpinnerValueFactory<Integer> maskFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,90);
+        heightFactory.setValue(100);
+        maskFactory.setValue(10);
+        heightSpinner.setValueFactory(heightFactory);
+        maskSpinner.setValueFactory(maskFactory);
+        hourVariants.getItems().addAll(hrsInterval);
+        minuteVariants.getItems().addAll(mnt);
+        startHour.getItems().addAll(hrs);
+        startMinute.getItems().addAll(mts);
+        startSecond.getItems().addAll(mts);
+        dateStart.setValue(selectedDate);
     }
 }

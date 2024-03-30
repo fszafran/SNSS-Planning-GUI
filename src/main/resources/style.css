@@ -49,3 +49,6 @@
     -fx-text-fill: black;
     -fx-font-family: Calibri;
 }
+.date-picker .spinner-label {
+    -fx-text-fill: black;
+}

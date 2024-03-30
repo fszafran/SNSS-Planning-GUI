@@ -97,6 +97,7 @@ public class NumberOfSatellitesChart implements Initializable {
         if(gpsCheckBox.isSelected()){
             glonassCheckBox.setSelected(false);
             galileoCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> shortenedNav = new ArrayList<>();
             for (List<Double> sat : nav){
                 if(sat.getFirst()<38){
@@ -111,6 +112,7 @@ public class NumberOfSatellitesChart implements Initializable {
         if(glonassCheckBox.isSelected()){
             gpsCheckBox.setSelected(false);
             galileoCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> shortenedNav = new ArrayList<>();
             for (List<Double> sat : nav){
                 if(sat.getFirst()>=38 && sat.getFirst()<202){
@@ -125,6 +127,7 @@ public class NumberOfSatellitesChart implements Initializable {
         if(galileoCheckBox.isSelected()){
             gpsCheckBox.setSelected(false);
             glonassCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> shortenedNav = new ArrayList<>();
             for (List<Double> sat : nav){
                 if(sat.getFirst()>=202){
@@ -133,6 +136,7 @@ public class NumberOfSatellitesChart implements Initializable {
             }
             lineChart.getData().clear();
             populateChart(this.lineChart, shortenedNav);
+            
         }
     }
     public void all(ActionEvent event){
@@ -160,5 +164,6 @@ public class NumberOfSatellitesChart implements Initializable {
         lineChart.prefHeightProperty().bind(chartPane.heightProperty());
         lineChart.setAnimated(false);
         chartPane.getChildren().add(lineChart);
+        allCheckBox.setSelected(true);
     }
 }

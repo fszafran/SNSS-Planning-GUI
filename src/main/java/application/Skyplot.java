@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Tooltip;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.fx.ChartViewer;
 import org.jfree.chart.JFreeChart;
@@ -25,13 +26,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 
-public class Skyplot implements Initializable{
+public class Skyplot implements Initializable {
     private Stage stage;
     private Scene scene;
     private Parent root;
@@ -45,54 +43,60 @@ public class Skyplot implements Initializable{
     private CheckBox glonassCheckBox;
     @FXML
     private CheckBox galileoCheckBox;
+    @FXML
+    private CheckBox allCheckBox;
     private SatelliteCalculations satelliteData = WelcomeSceneController.satelliteData;
     private int hourInterval = satelliteData.hourInterval;
     private List<List<Double>> nav = WelcomeSceneController.nav;
     private Map<Double, List<Double>> azimuthElevationMap = satelliteData.getAzimuthElevation(nav);
     private double mask = Math.toDegrees(satelliteData.mask);
+    private Map<Double, List<Double>> currentMap;
+    private int startYear = satelliteData.year;
+    private int startMonth = satelliteData.month;
+    private int startDay = satelliteData.day;
+    private int startHour = satelliteData.hour;
+    private int startMinute = satelliteData.minute;
+    private int startSecond = satelliteData.second;
+
     public void back(ActionEvent event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene=new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-    public void mainMenu(ActionEvent event) throws IOException{
-        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("WelcomeScene.fxml")));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene=new Scene(root);
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
 
-    private XYDataset createDataset(int currentTime){
+    public void mainMenu(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("WelcomeScene.fxml")));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private XYDataset createDataset(int currentTime, Map<Double, List<Double>> skyMap) {
         XYSeriesCollection result = new XYSeriesCollection();
-        for (Map.Entry<Double, List<Double>> entry : azimuthElevationMap.entrySet()){
+        for (Map.Entry<Double, List<Double>> entry : skyMap.entrySet()) {
             String satelliteId;
             if (entry.getKey() < 38) {
-                int keyWithoutDecimals = entry.getKey().intValue();
-                satelliteId = String.format("G%d", keyWithoutDecimals);
-            }
-            else if(entry.getKey() >= 38 && entry.getKey() < 202){
-                int keyWithoutDecimals = entry.getKey().intValue()-37;
-                satelliteId = String.format("R%d", keyWithoutDecimals);
-            }
-            else{
-                int keyWithoutDecimals = entry.getKey().intValue()-200;
-                satelliteId = String.format("E%d", keyWithoutDecimals);
+                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue());
+                satelliteId = "G"+keyWithoutDecimals;
+            } else if (entry.getKey() >= 38 && entry.getKey() < 202) {
+                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue() - 37);
+                satelliteId = "R"+keyWithoutDecimals;
+            } else {
+                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue() - 200);
+                satelliteId = "E"+keyWithoutDecimals;
             }
             List<Double> azimuthElevation = entry.getValue();
             int index;
-            if(currentTime==0) {
+            if (currentTime == 0) {
                 index = currentTime;
+            } else {
+                index = currentTime * 2;
             }
-            else{
-                index = currentTime*2;
-            }
-            //System.out.println("przedif"+ index);
-            if(index>=0 && index<azimuthElevation.size()-1) {
+            if (index >= 0 && index < azimuthElevation.size() - 1) {
                 if (azimuthElevation.get(index + 1) > this.mask) {
-                    //System.out.println("poif"+index);
                     double az = azimuthElevation.get(index);
                     double el = azimuthElevation.get(index + 1);
                     XYSeries series = new XYSeries("Satellite " + satelliteId);
@@ -101,10 +105,11 @@ public class Skyplot implements Initializable{
                 }
             }
         }
-    return result;
+        return result;
     }
-    private JFreeChart configureChart(XYDataset dataset){
-        JFreeChart chart = ChartFactory.createPolarChart("",dataset,true,false,false
+
+    private JFreeChart configureChart(XYDataset dataset) {
+        JFreeChart chart = ChartFactory.createPolarChart("", dataset, true, false, false
         );
         PolarPlot plot = (PolarPlot) chart.getPlot();
         plot.setRadiusMinorGridlinesVisible(false);
@@ -117,12 +122,78 @@ public class Skyplot implements Initializable{
         rangeAxis.setInverted(true);
         return chart;
     }
+    private void updateChart(int currentTime, Map<Double, List<Double>> skyMap) {
+        chartPane.getChildren().clear();
+        XYDataset dataset = createDataset(currentTime, skyMap);
+        JFreeChart chart = configureChart(dataset);
+        ChartViewer viewer = new ChartViewer(chart);
+        viewer.setPrefWidth(900);
+        viewer.setPrefHeight(610);
+        chartPane.getChildren().add(viewer);
+    }
+
+    public void gps(ActionEvent event) {
+        if (gpsCheckBox.isSelected()) {
+            glonassCheckBox.setSelected(false);
+            galileoCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
+            List<List<Double>> shortenedNav = new ArrayList<>();
+            for (List<Double> sat : this.nav) {
+                if (sat.getFirst() < 38) {
+                    shortenedNav.add(sat);
+                }
+            }
+            Map<Double, List<Double>> skyMap = satelliteData.getAzimuthElevation(shortenedNav);
+            this.currentMap = skyMap;
+            updateChart((int) hourSlider.getValue(),skyMap);
+        }
+    }
+    public void glonass(ActionEvent event){
+        if(glonassCheckBox.isSelected()){
+            gpsCheckBox.setSelected(false);
+            galileoCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
+            List<List<Double>> shortenedNav = new ArrayList<>();
+            for(List<Double> sat : this.nav){
+                if(sat.getFirst()>=38 && sat.getFirst()<202){
+                    shortenedNav.add(sat);
+                }
+            }
+            Map<Double, List<Double>> skyMap = satelliteData.getAzimuthElevation(shortenedNav);
+            this.currentMap = skyMap;
+            updateChart((int) hourSlider.getValue(),skyMap);
+        }
+    }
+    public void galileo(ActionEvent event) {
+        if (galileoCheckBox.isSelected()) {
+            glonassCheckBox.setSelected(false);
+            gpsCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
+            List<List<Double>> shortenedNav = new ArrayList<>();
+            for (List<Double> sat : this.nav) {
+                if (sat.getFirst() >= 202) {
+                    shortenedNav.add(sat);
+                }
+            }
+            Map<Double, List<Double>> skyMap = satelliteData.getAzimuthElevation(shortenedNav);
+            this.currentMap = skyMap;
+            updateChart((int) hourSlider.getValue(), skyMap);
+        }
+    }
+    public void all(ActionEvent event){
+        if(allCheckBox.isSelected()){
+            glonassCheckBox.setSelected(false);
+            gpsCheckBox.setSelected(false);
+            galileoCheckBox.setSelected(false);
+            this.currentMap = azimuthElevationMap;
+            updateChart((int) hourSlider.getValue(), this.currentMap);
+        }
+    }
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         hourSlider.setMin(0);
-        System.out.println(hourInterval);
         hourSlider.setMax(hourInterval);
         hourSlider.setBlockIncrement(1);
         hourSlider.setShowTickMarks(true);
@@ -130,28 +201,18 @@ public class Skyplot implements Initializable{
         hourSlider.setMajorTickUnit(1);
         hourSlider.setMinorTickCount(0);
         hourSlider.setSnapToTicks(true);
-        hourSlider.valueProperty().addListener(new ChangeListener<Number>()
-        {
-            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val)
-            {
+        Tooltip tooltip = new Tooltip("Time (in hours) starting from: \n       "+SatelliteCalculations.formatValue(startDay)+"."+SatelliteCalculations.formatValue(startMonth)+"."+ startYear
+        +" - "+SatelliteCalculations.formatValue(startHour)+":"+SatelliteCalculations.formatValue(startMinute)+":"+SatelliteCalculations.formatValue(startSecond));
+        hourSlider.setTooltip(tooltip);
+        hourSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 hourSlider.setValue(new_val.intValue());
-                updateChart(new_val.intValue());
-                //System.out.println(new_val.intValue());
+                updateChart(new_val.intValue(),currentMap);
             }
         });
-        for (Map.Entry<Double, List<Double>> entry : azimuthElevationMap.entrySet()){
-            System.out.println(entry.getKey()+ ": "+entry.getValue());
-        }
+        currentMap = azimuthElevationMap;
+        updateChart((int) hourSlider.getValue(), currentMap);
+        allCheckBox.setSelected(true);
+    }
 
-        updateChart((int)hourSlider.getValue());
-    }
-    private void updateChart(int currentTime){
-        chartPane.getChildren().clear();
-        XYDataset dataset = createDataset(currentTime);
-        JFreeChart chart = configureChart(dataset);
-        ChartViewer viewer = new ChartViewer(chart);
-        viewer.setPrefWidth(900);
-        viewer.setPrefHeight(610);
-        chartPane.getChildren().add(viewer);
-    }
 }

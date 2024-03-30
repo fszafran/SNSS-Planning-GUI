@@ -101,7 +101,6 @@ public class SatelliteCalculations {
         do {
             E.add(Mk + e * Math.sin(E.get(j)));
             j++;
-            //System.out.println("Jotka:" + j);
         } while (!(Math.abs(E.get(j) - E.get(j - 1)) < 1e-12));
         double vk = Math.atan2(Math.sqrt(1 - Math.pow(e, 2)) * Math.sin(E.get(j)), Math.cos(E.get(j)) - e);
         double phik = vk + w;
@@ -232,23 +231,18 @@ public class SatelliteCalculations {
             RealMatrix ATA = transposeA.multiply(AMatrix);
             RealMatrix Q = new LUDecomposition(ATA).getSolver().getInverse();
             double GDOP = Math.sqrt(Q.getTrace());
-            System.out.println("t: "+i+" gdop: "+GDOP);
             dops.getFirst().add(GDOP);
             double PDOP = Math.sqrt(Q.getEntry(0, 0) + Q.getEntry(1, 1) + Q.getEntry(2, 2));
-            System.out.println("t: "+i+" PDOP: "+PDOP);
             dops.get(1).add(PDOP);
             double TDOP = Math.sqrt(Q.getEntry(3, 3));
-            System.out.println("t: "+i+" TDOP: "+TDOP);
             dops.get(2).add(TDOP);
             RealMatrix Qxyz = Q.getSubMatrix(0, 2, 0, 2);
             RealMatrix RTR = new Array2DRowRealMatrix(RT);
             RealMatrix RR = new Array2DRowRealMatrix(R);
             RealMatrix Qneu = RTR.multiply(Qxyz).multiply(RR);
             double HDOP = Math.sqrt(Qneu.getEntry(0, 0) + Qneu.getEntry(1, 1));
-            System.out.println("t: "+i+" HDOP: "+HDOP);
             dops.get(3).add(HDOP);
             double VDOP = Math.sqrt(Qneu.getEntry(2, 2));
-            System.out.println("t: "+i+" VDOP: "+VDOP);
             dops.get(4).add(VDOP);
             double PDOPneu = Math.sqrt(Qneu.getEntry(0, 0) + Qneu.getEntry(1, 1) + Qneu.getEntry(2, 2));
             if (Math.abs(PDOP - PDOPneu) > 1e-9) {

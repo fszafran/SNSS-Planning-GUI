@@ -102,6 +102,7 @@ public class DopsChart implements Initializable {
         if(gpsCheckBox.isSelected()){
             glonassCheckBox.setSelected(false);
             galileoCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> shortenedNav=new ArrayList<>();
             for (List<Double> sat : nav){
                 if(sat.getFirst()<38){
@@ -117,6 +118,7 @@ public class DopsChart implements Initializable {
         if(glonassCheckBox.isSelected()){
             gpsCheckBox.setSelected(false);
             galileoCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> shortenedNav=new ArrayList<>();
             for (List<Double> sat : nav){
                 if(sat.getFirst()>=38 && sat.getFirst()<202){
@@ -133,6 +135,7 @@ public class DopsChart implements Initializable {
         if(galileoCheckBox.isSelected()){
             gpsCheckBox.setSelected(false);
             glonassCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> shortenedNav=new ArrayList<>();
             for (List<Double> sat : nav){
                 if(sat.getFirst()>=202){
@@ -166,6 +169,7 @@ public class DopsChart implements Initializable {
         lineChart.prefHeightProperty().bind(chartPane.heightProperty());
         lineChart.setAnimated(false);
         chartPane.getChildren().add(lineChart);
+        allCheckBox.setSelected(true);
 
     }
 }

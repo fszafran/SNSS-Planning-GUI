@@ -9,7 +9,7 @@
    <children>
       <Pane fx:id="chartPane" prefHeight="630.0" prefWidth="900.0" />
       <Button fx:id="back" layoutX="823.0" layoutY="646.0" mnemonicParsing="false" onAction="#back" stylesheets="@../style.css" text="Powrót" />
-      <Button fx:id="mainMenu" layoutX="647.0" layoutY="636.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Menu Główne&#10;(Zmiana Parametrów)" textAlignment="CENTER" />
+      <Button fx:id="mainMenu" layoutX="669.0" layoutY="646.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Zmień parametry" textAlignment="CENTER" />
       <CheckBox fx:id="allCheckBox" layoutX="487.0" layoutY="656.0" mnemonicParsing="false" onAction="#all" text="ALL" />
       <CheckBox fx:id="galileoCheckBox" layoutX="360.0" layoutY="657.0" mnemonicParsing="false" onAction="#galileo" text="GALILEO" />
       <CheckBox fx:id="glonassCheckBox" layoutX="222.0" layoutY="657.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS" />

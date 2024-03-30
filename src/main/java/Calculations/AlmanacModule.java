@@ -47,9 +47,7 @@ public class AlmanacModule {
                 (row.getFirst() >101 && row.getFirst() < 202)||
                 row.getFirst()>236
                 );
-//        for (List<Double> cos : finalData){
-//            System.out.println(cos);
-//        }
+
         return finalData;
    }
 }

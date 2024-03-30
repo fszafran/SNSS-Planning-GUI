@@ -14,14 +14,14 @@
          <font>
             <Font size="13.0" />
          </font></Button>
-      <Button fx:id="mainMenu" layoutX="656.0" layoutY="640.0" mnemonicParsing="false" onAction="#mainMenu" prefWidth="134.0" stylesheets="@../style.css" text="Menu Główne&#10;(Zmiana Parametrów)" textAlignment="CENTER">
+      <Button fx:id="mainMenu" layoutX="662.0" layoutY="650.0" mnemonicParsing="false" onAction="#mainMenu" prefWidth="134.0" stylesheets="@../style.css" text="Zmień parametry" textAlignment="CENTER">
          <font>
             <Font size="13.0" />
          </font></Button>
       <Slider fx:id="hourSlider" blockIncrement="1.0" cache="true" layoutX="42.0" layoutY="621.0" majorTickUnit="1.0" max="24.0" minorTickCount="0" prefHeight="38.0" prefWidth="584.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-      <CheckBox fx:id="gpsCheckBox" layoutX="130.0" layoutY="665.0" mnemonicParsing="false" text="GPS" />
-      <CheckBox fx:id="glonassCheckBox" layoutX="227.0" layoutY="665.0" mnemonicParsing="false" text="GLONASS" />
-      <CheckBox fx:id="galileoCheckBox" layoutX="334.0" layoutY="665.0" mnemonicParsing="false" text="GALIELO" />
-      <CheckBox fx:id="allCheckBox" layoutX="450.0" layoutY="665.0" mnemonicParsing="false" text="ALL" />
+      <CheckBox fx:id="gpsCheckBox" layoutX="130.0" layoutY="665.0" mnemonicParsing="false" onAction="#gps" text="GPS" />
+      <CheckBox fx:id="glonassCheckBox" layoutX="227.0" layoutY="665.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS" />
+      <CheckBox fx:id="galileoCheckBox" layoutX="334.0" layoutY="665.0" mnemonicParsing="false" onAction="#galileo" text="GALIELO" />
+      <CheckBox fx:id="allCheckBox" layoutX="450.0" layoutY="665.0" mnemonicParsing="false" onAction="#all" text="ALL" />
    </children>
 </AnchorPane>

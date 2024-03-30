@@ -25,11 +25,11 @@ public class ElevationChart implements Initializable {
     @FXML
     private Pane chartPane;
     @FXML
-    private CheckBox GPSCheckBox;
+    private CheckBox gpsCheckBox;
     @FXML
-    private CheckBox GalileoCheckBox;
+    private CheckBox galileoCheckBox;
     @FXML
-    private CheckBox GlonassCheckBox;
+    private CheckBox glonassCheckBox;
     @FXML
     private CheckBox allCheckBox;
     private SatelliteCalculations satelliteData = WelcomeSceneController.satelliteData;
@@ -55,16 +55,16 @@ public class ElevationChart implements Initializable {
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
             double time = 0;
             if (entry.getKey() < 38) {
-                int keyWithoutDecimals = entry.getKey().intValue();
-                satelliteId = String.format("G%d", keyWithoutDecimals);
+                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue());
+                satelliteId = "G"+keyWithoutDecimals;
             }
             else if(entry.getKey() >= 38 && entry.getKey() < 202){
-                int keyWithoutDecimals = entry.getKey().intValue()-37;
-                satelliteId = String.format("R%d", keyWithoutDecimals);
+                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue() - 37);
+                satelliteId = "R"+keyWithoutDecimals;
             }
             else{
-                int keyWithoutDecimals = entry.getKey().intValue()-200;
-                satelliteId = String.format("E%d", keyWithoutDecimals);
+                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue() - 200);
+                satelliteId = "E"+keyWithoutDecimals;
             }
 
             for (Double elevation : elevations) {
@@ -82,11 +82,11 @@ public class ElevationChart implements Initializable {
                             }
                             String timeString = String.format("+%d hours  %02d minutes", hFormat, mFormat);
                             String elevationString = String.format("%.2f", elevation);
-                            Tooltip tooltip = new Tooltip("Satellite: " + satelliteId + "\nTime: " + timeString + "\nElevation: " + elevationString);
+                            Tooltip tooltip = new Tooltip("Satellite: " + satelliteId + "\nTime: " + timeString + "\nElevation: " + elevationString+"°");
                             Tooltip.install(newNode, tooltip);
                         }
                     });
-                    time += (double) minuteInterval / 60; // Increment time by the minuteInterval converted to hours
+                    time += (double) minuteInterval / 60; 
                 } else {
                     time += (double) minuteInterval / 60;
                 }
@@ -113,10 +113,11 @@ public class ElevationChart implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
-    public void GPS(ActionEvent event){
-        if(GPSCheckBox.isSelected()){
-            GlonassCheckBox.setSelected(false);
-            GalileoCheckBox.setSelected(false);
+    public void gps(ActionEvent event){
+        if(gpsCheckBox.isSelected()){
+            glonassCheckBox.setSelected(false);
+            galileoCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> navGPS = new ArrayList<>();
             for(List<Double> sat : this.nav){
                 if(sat.getFirst()<38){
@@ -129,9 +130,10 @@ public class ElevationChart implements Initializable {
         }
     }
     public void glonass(ActionEvent event){
-        if(GlonassCheckBox.isSelected()){
-            GPSCheckBox.setSelected(false);
-            GalileoCheckBox.setSelected(false);
+        if(glonassCheckBox.isSelected()){
+            gpsCheckBox.setSelected(false);
+            galileoCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> navGlonass = new ArrayList<>();
             for(List<Double> sat : this.nav){
                 if(sat.getFirst()>=38 && sat.getFirst()<202){
@@ -144,9 +146,10 @@ public class ElevationChart implements Initializable {
         }
     }
     public void galileo(ActionEvent event){
-        if(GalileoCheckBox.isSelected()){
-            GlonassCheckBox.setSelected(false);
-            GPSCheckBox.setSelected(false);
+        if(galileoCheckBox.isSelected()){
+            glonassCheckBox.setSelected(false);
+            gpsCheckBox.setSelected(false);
+            allCheckBox.setSelected(false);
             List<List<Double>> navGalileo = new ArrayList<>();
             for(List<Double> sat : this.nav){
                 if(sat.getFirst()>=202){
@@ -160,9 +163,9 @@ public class ElevationChart implements Initializable {
     }
     public void all(ActionEvent event){
         if(allCheckBox.isSelected()){
-            GlonassCheckBox.setSelected(false);
-            GPSCheckBox.setSelected(false);
-            GalileoCheckBox.setSelected(false);
+            glonassCheckBox.setSelected(false);
+            gpsCheckBox.setSelected(false);
+            galileoCheckBox.setSelected(false);
             lineChart.getData().clear();
             populateChart(this.lineChart,this.elevationMap);
         }
@@ -183,6 +186,7 @@ public class ElevationChart implements Initializable {
         lineChart.prefHeightProperty().bind(chartPane.heightProperty());
         lineChart.setAnimated(false);
         chartPane.getChildren().add(lineChart);
+        allCheckBox.setSelected(true);
     }
 
 }

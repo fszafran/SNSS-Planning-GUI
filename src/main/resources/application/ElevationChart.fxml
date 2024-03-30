@@ -12,15 +12,15 @@
          <font>
             <Font size="13.0" />
          </font></Button>
-      <Button fx:id="mainMenu" layoutX="663.0" layoutY="645.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Menu Główne&#10;(Zmiana Parametrów)" textAlignment="CENTER">
+      <Button fx:id="mainMenu" layoutX="677.0" layoutY="656.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Zmień parametry" textAlignment="CENTER">
          <font>
             <Font size="13.0" />
          </font></Button>
-      <CheckBox fx:id="GPSCheckBox" layoutX="80.0" layoutY="658.0" mnemonicParsing="false" onAction="#GPS" text="GPS">
+      <CheckBox fx:id="gpsCheckBox" layoutX="80.0" layoutY="658.0" mnemonicParsing="false" onAction="#gps" text="GPS">
          <font>
             <Font size="14.0" />
          </font></CheckBox>
-      <CheckBox fx:id="GlonassCheckBox" layoutX="154.0" layoutY="659.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS">
+      <CheckBox fx:id="glonassCheckBox" layoutX="154.0" layoutY="659.0" mnemonicParsing="false" onAction="#glonass" text="GLONASS">
          <font>
             <Font size="14.0" />
          </font></CheckBox>
@@ -30,7 +30,7 @@
             <Font size="14.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="GalileoCheckBox" layoutX="270.0" layoutY="660.0" mnemonicParsing="false" onAction="#galileo" text="GALILEO">
+      <CheckBox fx:id="galileoCheckBox" layoutX="270.0" layoutY="660.0" mnemonicParsing="false" onAction="#galileo" text="GALILEO">
          <font>
             <Font size="14.0" />
          </font>
