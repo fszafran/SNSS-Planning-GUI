@@ -38,20 +38,20 @@ public class NumberOfSatellitesChart implements Initializable {
     @FXML
     private CheckBox allCheckBox;
 
-    private SatelliteCalculations satelliteData = WelcomeSceneController.satelliteData;
-    private int hourInterval = satelliteData.hourInterval;
-    private int minuteInterval = satelliteData.minuteInterval;
-    private List<List<Double>> nav = WelcomeSceneController.nav;
-    private List<Integer> satellitesNumberForMax = satelliteData.getSatellitesAtTheMoment(nav);
+    private final SatelliteCalculations satelliteData = WelcomeScene.satelliteData;
+    private final int hourInterval = satelliteData.hourInterval;
+    private final int minuteInterval = satelliteData.minuteInterval;
+    private final List<List<Double>> nav = WelcomeScene.nav;
+    private final List<Integer> satellitesNumberForMax = satelliteData.getSatellitesAtTheMoment(nav);
     private final NumberAxis xAxis = new NumberAxis(0,hourInterval,1);
     private final NumberAxis yAxis = new NumberAxis();
     final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-    private int startYear = satelliteData.year;
-    private int startMonth = satelliteData.month;
-    private int startDay = satelliteData.day;
-    private int startHour = satelliteData.hour;
-    private int startMinute = satelliteData.minute;
-    private int startSecond = satelliteData.second;
+    private final int startYear = satelliteData.year;
+    private final int startMonth = satelliteData.month;
+    private final int startDay = satelliteData.day;
+    private final int startHour = satelliteData.hour;
+    private final int startMinute = satelliteData.minute;
+    private final int startSecond = satelliteData.second;
 
     public void back(ActionEvent event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));

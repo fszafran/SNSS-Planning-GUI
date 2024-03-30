@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="900.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VisualisationMenuController">
+<AnchorPane prefHeight="700.0" prefWidth="900.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.VisualisationMenu">
    <children>
       <Button fx:id="button1" alignment="CENTER" contentDisplay="CENTER" layoutX="388.0" layoutY="182.0" mnemonicParsing="false" onAction="#button1Click" text="Wykres Liniowy&#10;Elewacja&#10;" textAlignment="CENTER">
          <font>

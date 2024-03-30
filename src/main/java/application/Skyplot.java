@@ -1,7 +1,5 @@
 package application;
 import Calculations.SatelliteCalculations;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
@@ -45,18 +43,18 @@ public class Skyplot implements Initializable {
     private CheckBox galileoCheckBox;
     @FXML
     private CheckBox allCheckBox;
-    private SatelliteCalculations satelliteData = WelcomeSceneController.satelliteData;
-    private int hourInterval = satelliteData.hourInterval;
-    private List<List<Double>> nav = WelcomeSceneController.nav;
-    private Map<Double, List<Double>> azimuthElevationMap = satelliteData.getAzimuthElevation(nav);
-    private double mask = Math.toDegrees(satelliteData.mask);
+    private final SatelliteCalculations satelliteData = WelcomeScene.satelliteData;
+    private final int hourInterval = satelliteData.hourInterval;
+    private final List<List<Double>> nav = WelcomeScene.nav;
+    private final Map<Double, List<Double>> azimuthElevationMap = satelliteData.getAzimuthElevation(nav);
+    private final double mask = Math.toDegrees(satelliteData.mask);
     private Map<Double, List<Double>> currentMap;
-    private int startYear = satelliteData.year;
-    private int startMonth = satelliteData.month;
-    private int startDay = satelliteData.day;
-    private int startHour = satelliteData.hour;
-    private int startMinute = satelliteData.minute;
-    private int startSecond = satelliteData.second;
+    private final int startYear = satelliteData.year;
+    private final int startMonth = satelliteData.month;
+    private final int startDay = satelliteData.day;
+    private final int startHour = satelliteData.hour;
+    private final int startMinute = satelliteData.minute;
+    private final int startSecond = satelliteData.second;
 
     public void back(ActionEvent event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
@@ -77,17 +75,7 @@ public class Skyplot implements Initializable {
     private XYDataset createDataset(int currentTime, Map<Double, List<Double>> skyMap) {
         XYSeriesCollection result = new XYSeriesCollection();
         for (Map.Entry<Double, List<Double>> entry : skyMap.entrySet()) {
-            String satelliteId;
-            if (entry.getKey() < 38) {
-                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue());
-                satelliteId = "G"+keyWithoutDecimals;
-            } else if (entry.getKey() >= 38 && entry.getKey() < 202) {
-                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue() - 37);
-                satelliteId = "R"+keyWithoutDecimals;
-            } else {
-                String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue() - 200);
-                satelliteId = "E"+keyWithoutDecimals;
-            }
+            String satelliteId = getString(entry);
             List<Double> azimuthElevation = entry.getValue();
             int index;
             if (currentTime == 0) {
@@ -106,6 +94,21 @@ public class Skyplot implements Initializable {
             }
         }
         return result;
+    }
+
+    private static String getString(Map.Entry<Double, List<Double>> entry) {
+        String satelliteId;
+        if (entry.getKey() < 38) {
+            String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue());
+            satelliteId = "G"+keyWithoutDecimals;
+        } else if (entry.getKey() >= 38 && entry.getKey() < 202) {
+            String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue() - 37);
+            satelliteId = "R"+keyWithoutDecimals;
+        } else {
+            String keyWithoutDecimals = SatelliteCalculations.formatValue(entry.getKey().intValue() - 200);
+            satelliteId = "E"+keyWithoutDecimals;
+        }
+        return satelliteId;
     }
 
     private JFreeChart configureChart(XYDataset dataset) {
@@ -204,11 +207,9 @@ public class Skyplot implements Initializable {
         Tooltip tooltip = new Tooltip("Time (in hours) starting from: \n       "+SatelliteCalculations.formatValue(startDay)+"."+SatelliteCalculations.formatValue(startMonth)+"."+ startYear
         +" - "+SatelliteCalculations.formatValue(startHour)+":"+SatelliteCalculations.formatValue(startMinute)+":"+SatelliteCalculations.formatValue(startSecond));
         hourSlider.setTooltip(tooltip);
-        hourSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-                hourSlider.setValue(new_val.intValue());
-                updateChart(new_val.intValue(),currentMap);
-            }
+        hourSlider.valueProperty().addListener((ov, old_val, new_val) -> {
+            hourSlider.setValue(new_val.intValue());
+            updateChart(new_val.intValue(),currentMap);
         });
         currentMap = azimuthElevationMap;
         updateChart((int) hourSlider.getValue(), currentMap);

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 
-public class VisualisationMenuController {
+public class VisualisationMenu {
     private Stage stage;
     private Scene scene;
     private Parent root;

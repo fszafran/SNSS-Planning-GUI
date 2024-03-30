@@ -32,21 +32,21 @@ public class ElevationChart implements Initializable {
     private CheckBox glonassCheckBox;
     @FXML
     private CheckBox allCheckBox;
-    private SatelliteCalculations satelliteData = WelcomeSceneController.satelliteData;
-    private double mask = Math.toDegrees(satelliteData.mask);
-    private int hourInterval = satelliteData.hourInterval;
-    private int minuteInterval = satelliteData.minuteInterval;
-    private Map<Double, List<Double>> elevationMap = WelcomeSceneController.elevationMap;
-    private List<List<Double>> nav = WelcomeSceneController.nav;
+    private final SatelliteCalculations satelliteData = WelcomeScene.satelliteData;
+    private final double mask = Math.toDegrees(satelliteData.mask);
+    private final int hourInterval = satelliteData.hourInterval;
+    private final int minuteInterval = satelliteData.minuteInterval;
+    private final Map<Double, List<Double>> elevationMap = WelcomeScene.elevationMap;
+    private final List<List<Double>> nav = WelcomeScene.nav;
     private final NumberAxis xAxis = new NumberAxis(0,hourInterval,1);
     private final NumberAxis yAxis = new NumberAxis();
     private final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-    private int startYear = satelliteData.year;
-    private int startMonth = satelliteData.month;
-    private int startDay = satelliteData.day;
-    private int startHour = satelliteData.hour;
-    private int startMinute = satelliteData.minute;
-    private int startSecond = satelliteData.second;
+    private final int startYear = satelliteData.year;
+    private final int startMonth = satelliteData.month;
+    private final int startDay = satelliteData.day;
+    private final int startHour = satelliteData.hour;
+    private final int startMinute = satelliteData.minute;
+    private final int startSecond = satelliteData.second;
 
     public void populateChart(LineChart<Number,Number> elevationChart,Map<Double, List<Double>>elevationMap){
         for (Map.Entry<Double, List<Double>> entry : elevationMap.entrySet()) {
@@ -86,10 +86,8 @@ public class ElevationChart implements Initializable {
                             Tooltip.install(newNode, tooltip);
                         }
                     });
-                    time += (double) minuteInterval / 60; 
-                } else {
-                    time += (double) minuteInterval / 60;
                 }
+                time += (double) minuteInterval / 60;
             }
             elevationChart.getData().add(series);
         }

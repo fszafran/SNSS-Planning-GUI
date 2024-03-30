@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class WelcomeSceneController implements Initializable {
+public class WelcomeScene implements Initializable {
     @FXML
         private TextField phiDeg;
     @FXML

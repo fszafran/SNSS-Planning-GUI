@@ -36,20 +36,20 @@ public class DopsChart implements Initializable {
     private CheckBox allCheckBox;
 
 
-    private SatelliteCalculations satelliteData = WelcomeSceneController.satelliteData;
-    private int hourInterval = satelliteData.hourInterval;
-    private int minuteInterval = satelliteData.minuteInterval;
-    private List<List<Double>> nav = WelcomeSceneController.nav;
-    private int startYear = satelliteData.year;
-    private int startMonth = satelliteData.month;
-    private int startDay = satelliteData.day;
+    private final SatelliteCalculations satelliteData = WelcomeScene.satelliteData;
+    private final int hourInterval = satelliteData.hourInterval;
+    private final int minuteInterval = satelliteData.minuteInterval;
+    private final List<List<Double>> nav = WelcomeScene.nav;
+    private final int startYear = satelliteData.year;
+    private final int startMonth = satelliteData.month;
+    private final int startDay = satelliteData.day;
     final NumberAxis xAxis = new NumberAxis(0,this.hourInterval,1);
     final NumberAxis yAxis = new NumberAxis();
     final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-    private List<List<Double>> dops = satelliteData.getDops(this.nav);
-    private int startHour = satelliteData.hour;
-    private int startMinute = satelliteData.minute;
-    private int startSecond = satelliteData.second;
+    private final List<List<Double>> dops = satelliteData.getDops(this.nav);
+    private final int startHour = satelliteData.hour;
+    private final int startMinute = satelliteData.minute;
+    private final int startSecond = satelliteData.second;
 
     public void back(ActionEvent event) throws IOException {
         root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
@@ -66,7 +66,7 @@ public class DopsChart implements Initializable {
         stage.show();
     }
     public void populateChart(LineChart<Number,Number> lineChart,List<List<Double>>dop){
-        String[] factors ={"GDOP", "PDOP","TDOP","HDOP","VDOP"};
+        String[] factors ={"Geometrical DOP", "Position DOP","Time DOP","Horizontal DOP","Vertical DOP"};
         int currentFactor=0;
         for(List<Double> factor : dop){
             XYChart.Series<Number, Number> series = new XYChart.Series<>();
