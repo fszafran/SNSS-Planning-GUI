@@ -14,8 +14,8 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("WelcomeScene.fxml")));
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("woot");
-        stage.getIcons().add(new Image("/icon.jpg"));
+        stage.setTitle("Pomiary SNSS");
+        stage.getIcons().add(new Image("/OIG3.jpg"));
         stage.show();
     }
 
