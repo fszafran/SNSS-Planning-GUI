@@ -9,7 +9,7 @@
 <AnchorPane fx:id="AllCheckBox" prefHeight="672.0" prefWidth="830.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.NumberOfSatellitesChart">
    <children>
       <Pane fx:id="chartPane" prefHeight="600.0" prefWidth="830.0" />
-      <Button fx:id="mainMenu" layoutX="606.0" layoutY="617.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Zmień parametry" textAlignment="CENTER">
+      <Button fx:id="mainMenu" layoutX="606.0" layoutY="617.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Zmień ustawienia" textAlignment="CENTER">
          <font>
             <Font size="13.0" />
          </font></Button>

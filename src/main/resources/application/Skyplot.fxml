@@ -14,7 +14,7 @@
          <font>
             <Font size="13.0" />
          </font></Button>
-      <Button fx:id="mainMenu" layoutX="662.0" layoutY="650.0" mnemonicParsing="false" onAction="#mainMenu" prefWidth="134.0" stylesheets="@../style.css" text="Zmień parametry" textAlignment="CENTER">
+      <Button fx:id="mainMenu" layoutX="662.0" layoutY="650.0" mnemonicParsing="false" onAction="#mainMenu" prefWidth="134.0" stylesheets="@../style.css" text="Zmień ustawienia" textAlignment="CENTER">
          <font>
             <Font size="13.0" />
          </font></Button>

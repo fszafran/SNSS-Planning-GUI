@@ -178,9 +178,6 @@ public class SatelliteCalculations {
         int stop = start + 60 * 60 * hourInterval;
         int numberOfSatellites=0;
         for (int i = start; i <= stop; i += 60 * minuteInterval) {
-            if(i>start){
-                satellitesByHour.add(numberOfSatellites);
-            }
             numberOfSatellites=0;
             for (List<Double> sat : nav) {
                 double[] XYZs = getSatPos(i, weekSecond[0], sat);
@@ -191,6 +188,7 @@ public class SatelliteCalculations {
                     numberOfSatellites++;
                 }
             }
+            satellitesByHour.add(numberOfSatellites);
         }
         return satellitesByHour;
     }

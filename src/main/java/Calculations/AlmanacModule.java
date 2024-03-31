@@ -44,10 +44,10 @@ public class AlmanacModule {
         data.clear();
         finalData.removeIf(row -> row.isEmpty() ||
                 row.contains(Double.NaN) ||
+                (row.get(1)==-1)||
                 (row.getFirst() >101 && row.getFirst() < 202)||
                 row.getFirst()>236
                 );
-
         return finalData;
    }
 }

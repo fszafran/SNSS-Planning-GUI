@@ -33,7 +33,7 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Button fx:id="mainMenu" layoutX="766.0" layoutY="643.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Zmień parametry" textAlignment="CENTER">
+      <Button fx:id="mainMenu" layoutX="766.0" layoutY="643.0" mnemonicParsing="false" onAction="#mainMenu" stylesheets="@../style.css" text="Zmień ustawienia" textAlignment="CENTER">
          <font>
             <Font size="13.0" />
          </font>

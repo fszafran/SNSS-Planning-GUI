@@ -24,11 +24,11 @@
          <font>
             <Font size="18.0" />
          </font></Label>
-      <Label layoutX="336.0" layoutY="258.0" text="Wysokość">
+      <Label layoutX="307.0" layoutY="258.0" text="Wysokość [m]">
          <font>
             <Font size="18.0" />
          </font></Label>
-      <Label layoutX="363.0" layoutY="304.0" text="Maska">
+      <Label layoutX="343.0" layoutY="304.0" text="Maska [˚]">
          <font>
             <Font size="18.0" />
          </font></Label>
@@ -51,7 +51,7 @@
       <ComboBox fx:id="minuteVariants" layoutX="422.0" layoutY="491.0" prefHeight="35.0" prefWidth="72.0" />
       <TextField fx:id="phiDeg" layoutX="420.0" layoutY="155.0" prefHeight="35.0" prefWidth="34.0" />
       <TextField fx:id="lamDeg" layoutX="420.0" layoutY="208.0" prefHeight="35.0" prefWidth="34.0" />
-      <Label alignment="CENTER" layoutY="98.0" prefHeight="35.0" prefWidth="900.0" text="Wprowadź parametry">
+      <Label alignment="CENTER" layoutY="98.0" prefHeight="35.0" prefWidth="900.0" text="Wprowadź dane">
          <font>
             <Font size="24.0" />
          </font>
