@@ -12,14 +12,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.io.File;
-import java.io.IOException;
+
+import java.io.*;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class WelcomeScene implements Initializable {
     @FXML
@@ -80,6 +77,33 @@ public class WelcomeScene implements Initializable {
 
     public void submition(ActionEvent event) throws IOException {
         try{
+            File dataFile = new File(System.getProperty("user.dir") + File.separator + "data.txt");
+            if(dataFile.exists()){
+                dataFile.delete();
+            }
+            else{
+                dataFile.createNewFile();
+            }
+            try (PrintWriter writer = new PrintWriter(dataFile)){
+                writer.println(phiDeg.getText());
+                writer.println(phiDeg1.getText());
+                writer.println(phiDeg2.getText());
+                writer.println(lamDeg.getText());
+                writer.println(lamDeg1.getText());
+                writer.println(lamDeg2.getText());
+                writer.println(heightSpinner.getValue());
+                writer.println(maskSpinner.getValue());
+                writer.println(startHour.getValue());
+                writer.println(startMinute.getValue());
+                writer.println(startSecond.getValue());
+                writer.println(hourVariants.getValue());
+                writer.println(minuteVariants.getValue());
+                writer.println(dateStart.getValue());
+            }
+            catch(Exception e){
+                System.out.println(Arrays.toString(e.getStackTrace()));
+            }
+
             phi = Integer.parseInt(phiDeg.getText()) + Integer.parseInt(phiDeg1.getText()) / 60 + Integer.parseInt(phiDeg2.getText()) / 3600;
             lam = Integer.parseInt(lamDeg.getText()) + Integer.parseInt(lamDeg1.getText()) / 60 + Integer.parseInt(lamDeg2.getText()) / 3600;
             height = heightSpinner.getValue();
@@ -99,7 +123,6 @@ public class WelcomeScene implements Initializable {
             }
             satelliteData = new SatelliteCalculations(phi, lam, height, mask, year, month, day, hourInterval, minuteInterval, hour, minute, second);
             elevationMap = satelliteData.getElevationTime(nav);
-
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("VisualisationMenu.fxml")));
             stage = (Stage)((Node)event.getSource()).getScene().getWindow();
             scene=new Scene(root);
@@ -130,6 +153,19 @@ public class WelcomeScene implements Initializable {
             selectButton.setText(file.getName());
         }
     }
+    private ArrayList<String> loadFromTxt(File file) throws IOException {
+        ArrayList<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+        return lines;
+    }
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         SpinnerValueFactory<Integer> heightFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0,8848);
@@ -143,6 +179,30 @@ public class WelcomeScene implements Initializable {
         startHour.getItems().addAll(hrs);
         startMinute.getItems().addAll(mts);
         startSecond.getItems().addAll(mts);
-        dateStart.setValue(selectedDate);
+        File file = new File(System.getProperty("user.dir") + File.separator + "data.txt");
+        if (file.exists()){
+            try {
+                ArrayList<String> data = loadFromTxt(file);
+                phiDeg.setText(data.get(0));
+                phiDeg1.setText(data.get(1));
+                phiDeg2.setText(data.get(2));
+                lamDeg.setText(data.get(3));
+                lamDeg1.setText(data.get(4));
+                lamDeg2.setText(data.get(5));
+                heightSpinner.getValueFactory().setValue(Integer.valueOf(data.get(6)));
+                maskSpinner.getValueFactory().setValue(Integer.valueOf(data.get(7)));
+                startHour.setValue(Integer.valueOf(data.get(8)));
+                startMinute.setValue(Integer.valueOf(data.get(9)));
+                startSecond.setValue(Integer.valueOf(data.get(10)));
+                hourVariants.setValue(Integer.valueOf(data.get(11)));
+                minuteVariants.setValue(Integer.valueOf(data.get(12)));
+                LocalDate date = LocalDate.parse(data.get(13));
+                dateStart.setValue(date);
+                file.delete();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
     }
 }
